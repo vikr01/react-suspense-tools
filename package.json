@@ -1,0 +1,10 @@
+{
+  "name": "react-suspense-tools",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "start": "npm run start --workspace=react-suspense-examples",
+    "test": "npm run start --workspace=react-suspense-examples"
+  }
+}
