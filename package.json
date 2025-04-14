@@ -2,9 +2,20 @@
   "name": "react-suspense-tools",
   "private": true,
   "version": "0.1.0",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
+    "build": "npm run build --workspaces",
     "start": "npm run start --workspace=react-suspense-examples",
-    "test": "npm run start --workspace=react-suspense-examples"
+    "test": "npm run start --workspace=react-suspense-examples",
+    "typecheck": "tsc -p tsconfig.source.json --noEmit",
+    "script": "npm-run"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.11.20",
+    "cpy": "^11.1.0",
+    "npm-run": "^5.0.1",
+    "tsup": "^8.4.0"
   }
 }

@@ -1,0 +1,32 @@
+{
+    // tsconfig.build.json
+    // -------------------------------------------------------------------
+    // This config is for build tooling ONLY — e.g., tsup.config.ts files.
+    // It should not be used for compiling application or runtime code.
+    // -------------------------------------------------------------------
+  
+    "compilerOptions": {
+      // Modern syntax and module resolution
+      "module": "ESNext",
+      "moduleResolution": "Node",
+      "target": "ES2020",
+  
+      // Allow importing JSON config files
+      "resolveJsonModule": true,
+      "esModuleInterop": true,
+  
+      // Strict typing for safe build tools
+      "strict": true,
+  
+      // Node types for fs, path, etc.
+      "types": ["node"]
+    },
+  
+    // Exclude app source and build output
+    "exclude": [
+      "node_modules",
+      "build",
+      "packages/*/src",
+      "packages/*/build"
+    ]
+}
