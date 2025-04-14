@@ -4,7 +4,7 @@ import { FiberProvider } from 'its-fine';
 import * as React from 'react';
 import RandomNumberPacket from './RandomNumberPacket';
 
-function App() {
+export default function App(): React.ReactElement {
   return (
     <FiberProvider>
       <div className="App">
@@ -24,5 +24,3 @@ function App() {
     </FiberProvider>
   );
 }
-
-export default App;
