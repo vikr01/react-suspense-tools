@@ -2,7 +2,6 @@ import * as React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/App';
-/* @ts-expect-error */
 import reportWebVitals from './reportWebVitals';
 
 /* @ts-expect-error */
