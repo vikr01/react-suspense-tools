@@ -9,7 +9,7 @@
     "build": "npm run build --workspaces",
     "start": "npm run start --workspace=react-suspense-examples",
     "test": "npm run start --workspace=react-suspense-examples",
-    "typecheck": "tsc -p tsconfig.source.json --noEmit",
+    "typecheck": "tsc -p tsconfig.source.json",
     "script": "npm-run"
   },
   "devDependencies": {
