@@ -1,20 +1,16 @@
 import * as React from 'react';
-import {useEffect, useRef} from 'react';
+import {useRef} from 'react';
 import type {Fiber} from 'its-fine';
-// import useStructuralId from 'use-structural-id';
+import useStructuralId, {type StructuralId} from 'use-structural-id';
 import useUnmount from 'react-use/lib/useUnmount';
-
-function useStructuralId(s: object): [Array<string | object>, object] {
-    return [['foo'], {}];
-}
 
 const map = new Map();
 const SENTINEL1 = {};
 
 console.log('map', map);
 
-export default function useSuspenseRef(initValue: any) {
-    const suspenseBoundaryRef = useRef(SENTINEL1);
+export default function useSuspenseRef<T>(initValue: T) {
+    const suspenseBoundaryRef = useRef<typeof SENTINEL1 | Fiber>(SENTINEL1);
     const ref = useRef(initValue);
     
     const [structuralId, suspenseBoundary] = useStructuralId((node: Fiber<any>) => {
@@ -26,6 +22,9 @@ export default function useSuspenseRef(initValue: any) {
     console.log('structuralId', structuralId);
 
     if (suspenseBoundaryRef.current !== suspenseBoundary) {
+        if (suspenseBoundary == null) {
+            throw new Error('Suspense boundary not found.');
+        }
         suspenseBoundaryRef.current = suspenseBoundary;
         ref.current = getValue(structuralId, suspenseBoundary, ref.current);
     }
@@ -42,7 +41,7 @@ export default function useSuspenseRef(initValue: any) {
     return ref;
 }
 
-function getValue(structuralId: Array<string | object>, suspenseBoundary: object, initValue: any) {
+function getValue<T>(structuralId: StructuralId, suspenseBoundary: Fiber, initValue: T) {
     if (!map.has(suspenseBoundary)) {
         map.set(suspenseBoundary, new Map());
     }

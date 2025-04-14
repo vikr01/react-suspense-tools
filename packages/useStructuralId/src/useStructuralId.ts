@@ -1,6 +1,10 @@
 import {useFiber, traverseFiber} from 'its-fine';
 
-export default function useStructuralId(selector: Parameters<typeof traverseFiber>[2]) {
+type Selector = Parameters<typeof traverseFiber>[2];
+export type StructuralId = string;
+type StopNode = ReturnType<typeof traverseFiber>;
+
+export default function useStructuralId(selector: Selector): [StructuralId, StopNode] {
     const fiber = useFiber();
     let structuralId = 'foo';
     const stopNode = traverseFiber(

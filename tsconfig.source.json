@@ -2,6 +2,8 @@
   // This config is ONLY for type-checking actual source code in packages
   // It is NOT used for any typescript files not in src/
 
+  "extends": "@tsconfig/recommended",
+
   "compilerOptions": {
     "target": "ES2020",
     "module": "NodeNext",
@@ -16,6 +18,10 @@
     "skipLibCheck": true,
 
     "allowImportingTsExtensions": true,
+    // "baseUrl": ".",
+    // "paths": {
+    //   "use-structural-id": ["packages/useStructuralId/src/useStructuralId.ts"] // 👈 This is the dev-time override
+    // }
   },
 
   "include": [
@@ -26,6 +32,5 @@
     "node_modules",
     "build",
     "packages/*/build",
-    "tsconfig.build.js"
-  ]
+  ],
 }

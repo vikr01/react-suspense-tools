@@ -2,6 +2,11 @@
   "name": "use-structural-id",
   "version": "0.0.0",
   "main": "build/useStructuralId.js",
+  "types": "build/useStructuralId.d.ts",
+  "type": "module",
+  "exports": {
+    ".": "./src/useStructuralId.ts"
+  },
   "scripts": {
     "build": "tsup",
     "test": "echo \"Error: no test specified\" && exit 1"
