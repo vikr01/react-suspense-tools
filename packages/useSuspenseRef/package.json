@@ -1,0 +1,19 @@
+{
+  "name": "use-suspense-ref",
+  "version": "0.0.0",
+  "main": "build/useSuspenseRef.js",
+  "scripts": {
+    "build": "tsup",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "react-use": "^17.6.0",
+    "use-structural-id": "^0.0.0"
+  },
+  "devDependencies": {
+    "react": "^19.0.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}
