@@ -28,6 +28,20 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 
 const createEnvironmentHash = require('./webpack/persistentCache/createEnvironmentHash');
 
+const glob = require('glob');
+
+// Resolve monorepo root
+const rootDir = path.resolve(__dirname, '../../../');
+const rootPkgJson = require(path.join(rootDir, 'package.json'));
+
+// Expand globs from workspaces
+const workspaceGlobs = rootPkgJson.workspaces || [];
+
+const monorepoSrcDirs = workspaceGlobs
+  .flatMap(globPattern => glob.sync(globPattern, { cwd: rootDir }))
+  .map(pkgPath => path.resolve(rootDir, pkgPath, 'src'))
+  .filter(srcPath => fs.existsSync(srcPath));
+
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
@@ -405,7 +419,7 @@ module.exports = function (webpackEnv) {
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
-              include: paths.appSrc,
+              include: [paths.appSrc, ...monorepoSrcDirs],
               loader: require.resolve('babel-loader'),
               options: {
                 customize: require.resolve(
