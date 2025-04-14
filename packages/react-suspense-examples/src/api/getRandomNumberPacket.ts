@@ -1,6 +1,11 @@
 import seedrandom from 'seedrandom';
 
-export default async function getRandomNumberPacket(seed) {
+type SeedObject<T> = {
+    seed: T,
+    num: number,
+};
+
+export default async function getRandomNumberPacket<T extends string>(seed: T): Promise<SeedObject<T>> {
     const rng = seedrandom(seed);
 
     const value = Object.freeze({
@@ -9,7 +14,7 @@ export default async function getRandomNumberPacket(seed) {
     });
 
     // stall just to mock a slow API
-    await new Promise((resolve, reject)=>{
+    await new Promise<void>((resolve, reject)=>{
         try {
             setTimeout(()=>{
                 resolve();
