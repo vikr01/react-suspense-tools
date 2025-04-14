@@ -1,5 +1,5 @@
 // tsup.base.ts
-import { Options } from 'tsup';
+import { type Options } from 'tsup';
 import cpy from 'cpy';
 import { resolve } from 'path';
 
