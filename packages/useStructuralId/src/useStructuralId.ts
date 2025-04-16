@@ -15,15 +15,20 @@ export default function useStructuralId(selector: Selector, dependencies: Readon
     prevDependenciesRef.current = dependencies;
 
     if (structuralIdRef.current == null || prevDependencies == null || !arrMatch(prevDependencies, dependencies)) {
+        const structuralNodes: Array<[Fiber, string | number]> = [];
+
         structuralIdRef.current = 'foo';
         stopNodeRef.current = traverseFiber(
             fiber,
             true,
-            selector,
-            // function(node, ...args) {
-            //     return selector(node, ...args);
-            // },
+            function(node, ...args) {
+                // console.log('node', node);
+                structuralNodes.push([node, node.key ?? node.index]);
+                return selector(node, ...args);
+            },
         ) ?? null;
+
+        console.log('strlist', structuralNodes);
     }
     
     return [structuralIdRef.current, stopNodeRef.current];
