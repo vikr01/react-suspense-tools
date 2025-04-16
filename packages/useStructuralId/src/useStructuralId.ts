@@ -1,20 +1,44 @@
-import {useFiber, traverseFiber} from 'its-fine';
+import {useFiber, traverseFiber, Fiber} from 'its-fine';
+import {useRef} from 'react';
 
 type Selector = Parameters<typeof traverseFiber>[2];
 export type StructuralId = string;
-type StopNode = ReturnType<typeof traverseFiber>;
+type StopNode = Fiber | null;
 
-export default function useStructuralId(selector: Selector): [StructuralId, StopNode] {
+export default function useStructuralId(selector: Selector, dependencies: ReadonlyArray<unknown>): [StructuralId, StopNode] {
+    const stopNodeRef = useRef<StopNode>(null);
+    const structuralIdRef = useRef<StructuralId>(null);
+    const prevDependenciesRef = useRef<ReadonlyArray<unknown>>(null);
     const fiber = useFiber();
-    let structuralId = 'foo';
-    const stopNode = traverseFiber(
-        fiber,
-        true,
-        selector,
-        // function(node, ...args) {
-        //     return selector(node, ...args);
-        // },
-    );
+
+    const prevDependencies = prevDependenciesRef.current;
+    prevDependenciesRef.current = dependencies;
+
+    if (structuralIdRef.current == null || prevDependencies == null || !arrMatch(prevDependencies, dependencies)) {
+        structuralIdRef.current = 'foo';
+        stopNodeRef.current = traverseFiber(
+            fiber,
+            true,
+            selector,
+            // function(node, ...args) {
+            //     return selector(node, ...args);
+            // },
+        ) ?? null;
+    }
     
-    return [structuralId, stopNode];
+    return [structuralIdRef.current, stopNodeRef.current];
+}
+
+function arrMatch(arr1: ReadonlyArray<unknown>, arr2: ReadonlyArray<unknown>) {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+            return false;
+        }
+    }
+
+    return true;
 }
