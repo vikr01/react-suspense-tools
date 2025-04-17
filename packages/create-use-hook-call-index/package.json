@@ -1,0 +1,23 @@
+{
+  "name": "create-use-hook-call-index",
+  "version": "0.0.0",
+  "main": "build/createUseHookCallIndex.js",
+  "types": "build/createUseHookCallIndex.d.ts",
+  "type": "module",
+  "exports": {
+    ".": "./src/createUseHookCallIndex.ts"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "its-fine": "^2.0.0"
+  }
+}
