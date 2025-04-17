@@ -4,29 +4,29 @@ import type {Fiber} from 'its-fine';
 import useStructuralId, {type StructuralId} from 'use-structural-id';
 import useUnmount from 'react-use/lib/useUnmount';
 
-const map = new Map();
+const map = new WeakMap();
 const SENTINEL1 = {};
 
 console.log('map', map);
 
-export default function useSuspenseRef<T>(initValue: T) {
+export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
     const suspenseBoundaryRef = useRef<typeof SENTINEL1 | Fiber>(SENTINEL1);
-    const ref = useRef(initValue);
+    const ref = useRef<null | React.RefObject<T>>(null);
     
     const [structuralId, suspenseBoundary] = useStructuralId((node: Fiber<any>) => {
         const res = node.elementType === React.Suspense;
         return res;
     }, []);
 
-    console.log('boundary', suspenseBoundary);
-    console.log('structuralId', structuralId);
-
     if (suspenseBoundaryRef.current !== suspenseBoundary) {
         if (suspenseBoundary == null) {
             throw new Error('Suspense boundary not found.');
         }
         suspenseBoundaryRef.current = suspenseBoundary;
-        ref.current = getValue(structuralId, suspenseBoundary, ref.current);
+    }
+
+    if (ref.current == null) {
+        ref.current = createKeyListener(structuralId, suspenseBoundary, initValue);
     }
 
     useUnmount(()=>()=>{
@@ -38,7 +38,9 @@ export default function useSuspenseRef<T>(initValue: T) {
     // [structuralId, suspenseBoundary]
     );
 
-    return ref;
+    console.log('here\'s obj', ref.current);
+
+    return ref.current;
 }
 
 function getValue<T>(structuralId: StructuralId, suspenseBoundary: Fiber, initValue: T) {
@@ -55,4 +57,33 @@ function getValue<T>(structuralId: StructuralId, suspenseBoundary: Fiber, initVa
     }
 
     return boundaryMap.get(structuralId);
+}
+
+function setValue<T>(structuralId: StructuralId, suspenseBoundary: Fiber, value: T) {
+    if (!map.has(suspenseBoundary)) {
+        map.set(suspenseBoundary, new Map());
+    }
+
+    const boundaryMap = map.get(suspenseBoundary);
+    boundaryMap.set(structuralId, value);
+}
+
+
+function createKeyListener<T>(structuralId: StructuralId, suspenseBoundary: Fiber, initValue: T): React.RefObject<T> {
+    const o = {};
+
+    const val = getValue(structuralId, suspenseBoundary, initValue);
+
+    Object.defineProperty(o, 'current', {
+        enumerable: true,
+        configurable: false,
+        get() {
+            return val;
+        },
+        set(v) { 
+            setValue(structuralId, suspenseBoundary, v);
+        },
+    });
+
+    return (o as React.RefObject<T>);
 }
