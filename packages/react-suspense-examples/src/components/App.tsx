@@ -6,21 +6,22 @@ import RandomNumberPacket from './RandomNumberPacket';
 
 export default function App(): React.ReactElement {
   return (
-    <FiberProvider>
-      <div className="App">
-        <div className="suspense-root">
-          <div className="suspense-container">
-            <Suspense>
-              <RandomNumberPacket seed="foobar"/>
-            </Suspense>
-          </div>
-          <div className="suspense-container">
-            <Suspense fallback={null}>
-              <RandomNumberPacket seed="barfoo"/>
-            </Suspense>
-          </div>
+    <div className="App">
+      <div className="suspense-root">
+        <div className="suspense-container">
+          <Suspense>
+            <RandomNumberPacket seed="foobar"/>
+          </Suspense>
+        </div>
+        <div className="suspense-container">
+          <Suspense fallback={null}>
+            <div/>
+            <div/>
+            <div/>
+            <RandomNumberPacket seed="barfoo"/>
+          </Suspense>
         </div>
       </div>
-    </FiberProvider>
+    </div>
   );
 }
