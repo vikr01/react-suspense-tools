@@ -2,6 +2,9 @@
 import { type Options } from 'tsup';
 import cpy from 'cpy';
 import { resolve } from 'path';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 export const tsupBaseConfig: Options = {
   entry: ['src'],
@@ -12,8 +15,8 @@ export const tsupBaseConfig: Options = {
   dts: {
     resolve: true,
     compilerOptions: {
-      module: 'NodeNext',
-      moduleResolution: 'NodeNext'
+      module: 'Preserve',
+      moduleResolution: 'Bundler'
     }
   },
   clean: true,
@@ -21,7 +24,7 @@ export const tsupBaseConfig: Options = {
 
   // ✅ Tell tsup to use the shared source config
   esbuildOptions(options) {
-    options.tsconfig = resolve(__dirname, 'tsconfig.source.json');
+    options.tsconfig = require.resolve('./tsconfig.source.json');
   },
 
   // Copy non-code assets from src → build

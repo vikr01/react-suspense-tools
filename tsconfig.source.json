@@ -6,8 +6,9 @@
 
   "compilerOptions": {
     "target": "ES2020",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
+    "moduleSuffixes": [".ts", ".tsx", ""],
     "lib": ["ES2020"],
     "jsx": "react-jsx",
     "esModuleInterop": true,

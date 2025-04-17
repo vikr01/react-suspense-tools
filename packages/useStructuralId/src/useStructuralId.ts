@@ -2,7 +2,7 @@ import * as React from 'react';
 import {traverseFiber, type Fiber} from 'its-fine';
 import {useRef} from 'react';
 import createUseHookCallIndex from 'create-use-hook-call-index';
-import {createArrayIdWithNumber} from './createStructuralId.ts'
+import {createArrayIdWithNumber} from './createStructuralId'
 
 const useHookCallIndex = createUseHookCallIndex();
 
