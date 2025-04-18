@@ -12,6 +12,11 @@ export const tsupBaseConfig: Options = {
   format: ['esm', 'cjs'],
   target: 'es2020',
   sourcemap: true,
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('production'),
+    '__DEV_STRUCTURAL_ID_DEBUG__': JSON.stringify(false),
+  },
+
   dts: {
     resolve: true,
     compilerOptions: {

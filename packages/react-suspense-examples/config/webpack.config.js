@@ -104,6 +104,7 @@ const hasJsxRuntime = (() => {
 module.exports = function (webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
+  console.log('isEnvDevelopment', isEnvDevelopment);
 
   // Variable used for enabling profiling in Production
   // passed into alias object. Uses a flag if passed into the build command
@@ -624,6 +625,9 @@ module.exports = function (webpackEnv) {
       // during a production build.
       // Otherwise React will be compiled in the very slow development mode.
       new webpack.DefinePlugin(env.stringified),
+      isEnvDevelopment && new webpack.DefinePlugin({
+        __DEV_STRUCTURAL_ID_DEBUG__: JSON.stringify(true) // or false
+      }),
       // Experimental hot reloading for React .
       // https://github.com/facebook/react/tree/main/packages/react-refresh
       isEnvDevelopment &&
