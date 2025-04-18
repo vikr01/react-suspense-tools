@@ -1,3 +1,9 @@
 {
-    "typescript.preferences.projectConfig": "tsconfig.source.json"
+    // Disable flowtype, this is a typescript project
+    "flow.enabled": false,
+
+    // Enable typescript for the project
+    "typescript.suggest.enabled": true,
+    "typescript.format.enable": true,
+    "typescript.validate.enable": true,
 }
