@@ -1,46 +1,55 @@
 import { nanoid } from 'nanoid/non-secure';
-import type { Fiber } from 'its-fine'; // or wherever you're importing from
 
-// ------------------------
-// Pointer-to-ID: Fiber → NanoID
-// ------------------------
+type ElementType = string | object | Function;
+type Key = string | number;
 
-const fiberHashes = new WeakMap<Fiber, string>();
+declare const __DEV_STRUCTURAL_ID_DEBUG__: boolean;
 
-function getFiberHash(fiber: Fiber): string {
-  if (!fiberHashes.has(fiber)) {
-    fiberHashes.set(fiber, nanoid(6)); // short + unique per fiber instance
+// This is just to see the keys as something readable in dev
+// const __DEV_STRUCTURAL_ID_DEBUG__ = false as const;
+console.log('__DEV_STRUCTURAL_ID_DEBUG__', __DEV_STRUCTURAL_ID_DEBUG__);
+
+const objectHashes = new WeakMap<object, string>();
+
+function getElementTypeId(elementType: ElementType): string {
+  if (typeof elementType !== 'object' && typeof elementType !== 'function') return elementType.toString();
+  console.log('elementType', elementType);
+
+  if (!objectHashes.has(elementType)) {
+    let id: string;
+
+    // This will get stripped out in prod as dead code
+    if (process.env.NODE_ENV === 'development' && __DEV_STRUCTURAL_ID_DEBUG__) {
+      id = (elementType as any).displayName ?? (elementType as any).name ?? elementType.toString();
+    } else {
+      id = nanoid(6);
+    }
+
+    objectHashes.set(elementType, id);
   }
-  return fiberHashes.get(fiber)!;
+
+  return objectHashes.get(elementType)!;
 }
 
-// ------------------------
-// createArrayId
-// ------------------------
-
 export function createArrayId(
-  arr: ReadonlyArray<[Fiber, string | number]>
+  arr: ReadonlyArray<[ElementType, Key]>
 ): string {
   const parts: string[] = [];
 
   for (let i = 0; i < arr.length; i++) {
-    const [fiber, key] = arr[i];
-    const fiberId = getFiberHash(fiber);
+    const [elementType, key] = arr[i];
+    const elementTypeId = getElementTypeId(elementType);
     const encodedKey =
       typeof key === 'string' ? `s:${key}` : `n:${key}`;
-    parts.push(`${fiberId}:${encodedKey}`);
+    parts.push(`${elementTypeId}:${encodedKey}`);
   }
 
   return parts.join(',');
 }
 
-// ------------------------
-// createArrayIdWithNumber
-// ------------------------
-
 export function createArrayIdWithNumber(
   num: number,
-  arr: ReadonlyArray<[Fiber, string | number]>
+  arr: ReadonlyArray<[ElementType, Key]>
 ): string {
   return `${num}:${createArrayId(arr)}`;
 }

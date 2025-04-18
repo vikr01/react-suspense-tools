@@ -37,10 +37,12 @@ export default function useStructuralId(selector: Selector, dependencies: Readon
             true,
             function(node, ...args) {
                 // console.log('node', node);
-                structuralNodes.push([node, node.key ?? node.index]);
+                structuralNodes.push([node.elementType, node.key ?? node.index]);
                 return selector(node, ...args);
             },
         ) ?? null;
+
+        console.log('structuralNodes', structuralNodes);
 
         structuralIdRef.current = createArrayIdWithNumber(hookCallIndex, structuralNodes);
 
