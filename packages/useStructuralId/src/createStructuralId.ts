@@ -12,6 +12,7 @@ console.log('__DEV_STRUCTURAL_ID_DEBUG__', __DEV_STRUCTURAL_ID_DEBUG__);
 const objectHashes = new WeakMap<object, string>();
 
 function getElementTypeId(elementType: ElementType): string {
+  if (elementType == null) { return 'Unknown'; }
   if (typeof elementType !== 'object' && typeof elementType !== 'function') return elementType.toString();
   console.log('elementType', elementType);
 
@@ -20,7 +21,7 @@ function getElementTypeId(elementType: ElementType): string {
 
     // This will get stripped out in prod as dead code
     if (process.env.NODE_ENV === 'development' && __DEV_STRUCTURAL_ID_DEBUG__) {
-      id = (elementType as any).displayName ?? (elementType as any).name ?? elementType.toString();
+      id = (elementType as any)?.displayName ?? (elementType as any).name ?? elementType.toString();
     } else {
       id = nanoid(6);
     }

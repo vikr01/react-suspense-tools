@@ -7,7 +7,7 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
 export const tsupBaseConfig: Options = {
-  entry: ['src'],
+  entry: ['src', '!src/**/__tests__/**', '!src/**/*.test.*'],
   outDir: 'build',
   format: ['esm', 'cjs'],
   target: 'es2020',

@@ -3,3 +3,4 @@ tsup.config.js
 typescript.config.json
 .gitignore
 .npmignore
+__tests__
