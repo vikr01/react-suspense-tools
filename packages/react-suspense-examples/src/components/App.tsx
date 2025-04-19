@@ -25,3 +25,5 @@ export default function App(): React.ReactElement {
     </div>
   );
 }
+
+type T = React.Component;

@@ -10,5 +10,5 @@ module.exports = {
     globals: {
         '__DEV_STRUCTURAL_ID_DEBUG__': JSON.stringify(false),
     },
-    setupFiles: [require.resolve('./testing/jest.setup.js')],
+    setupFiles: [require.resolve('./testing/jest.setup.js'), require.resolve('./testing/jest.console-filter.js')],
 };
