@@ -36,7 +36,7 @@ export default function useStructuralId(selector: Selector, dependencies: Readon
             fiber,
             true,
             function(node, ...args) {
-                // console.log('node', node);
+                console.log('node', node);
                 structuralNodes.push([node.elementType, node.key ?? node.index]);
                 return selector(node, ...args);
             },

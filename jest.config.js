@@ -1,0 +1,14 @@
+module.exports = {
+    preset: 'ts-jest',
+    testEnvironment: 'jsdom', // or 'node' if no DOM is needed
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+    transform: {
+        '^.+\\.(ts|tsx)$': ['ts-jest', {tsconfig: require.resolve('./tsconfig.source.json')}],
+        '^.+\\.(css|less|scss|sass)$': 'jest-transform-stub',
+    },
+    testPathIgnorePatterns: ['/node_modules/', '/build/'],
+    globals: {
+        '__DEV_STRUCTURAL_ID_DEBUG__': JSON.stringify(false),
+    },
+    setupFiles: [require.resolve('./testing/jest.setup.js')],
+};

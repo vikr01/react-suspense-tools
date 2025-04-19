@@ -8,17 +8,22 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "start": "npm run start --workspace=react-suspense-examples",
-    "test": "npm run start --workspace=react-suspense-examples",
+    "test": "jest",
     "typecheck": "tsc -p tsconfig.source.json",
     "script": "npm-run"
   },
   "devDependencies": {
     "@swc/core": "^1.11.20",
+    "@testing-library/react": "^16.3.0",
     "@tsconfig/recommended": "^1.0.8",
     "@types/jest": "^29.5.14",
     "@types/seedrandom": "^3.0.8",
     "cpy": "^11.1.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-transform-stub": "^2.0.0",
     "npm-run": "^5.0.1",
+    "ts-jest": "^29.3.2",
     "tsup": "^8.4.0"
   }
 }
