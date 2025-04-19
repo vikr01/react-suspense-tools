@@ -6,9 +6,10 @@ import {createArrayIdWithNumber} from './createStructuralId'
 
 const useHookCallIndex = createUseHookCallIndex();
 
-type Selector = Parameters<typeof traverseFiber>[2];
+export type {Fiber};
+export type Selector = null | Parameters<typeof traverseFiber>[2];
 export type StructuralId = string;
-type StopNode = Fiber | null;
+export type StopNode = Fiber | null;
 
 export default function useStructuralId(selector: Selector, dependencies: ReadonlyArray<unknown>): [StructuralId, StopNode] {
     const stopNodeRef = useRef<StopNode>(null);
@@ -38,7 +39,7 @@ export default function useStructuralId(selector: Selector, dependencies: Readon
             function(node, ...args) {
                 console.log('node', node);
                 structuralNodes.push([node.elementType, node.key ?? node.index]);
-                return selector(node, ...args);
+                return selector?.(node, ...args);
             },
         ) ?? null;
 
