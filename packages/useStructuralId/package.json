@@ -3,10 +3,6 @@
   "version": "0.0.0",
   "main": "build/useStructuralId.js",
   "types": "build/useStructuralId.d.ts",
-  "type": "module",
-  "exports": {
-    ".": "./src/useStructuralId.ts"
-  },
   "author": {
     "name": "Vik R",
     "email": "vik120@icloud.com",
