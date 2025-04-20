@@ -14,7 +14,11 @@
   "peerDependencies": {
     "react": "^19.0.0"
   },
-  "author": "",
+  "author": {
+    "name": "Vik R",
+    "email": "vik120@icloud.com",
+    "url": "http://linkedin.com/in/vikr01/"
+  },
   "license": "ISC",
   "description": "",
   "dependencies": {

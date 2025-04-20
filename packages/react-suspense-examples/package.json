@@ -1,6 +1,11 @@
 {
   "name": "react-suspense-examples",
   "private": true,
+  "author": {
+    "name": "Vik R",
+    "email": "vik120@icloud.com",
+    "url": "http://linkedin.com/in/vikr01/"
+  },
   "dependencies": {
     "@babel/core": "^7.16.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.16",
