@@ -5,6 +5,11 @@
   "workspaces": [
     "packages/*"
   ],
+  "author": {
+    "name": "Vik R",
+    "email": "vik120@icloud.com",
+    "url": "http://linkedin.com/in/vikr01/"
+  },
   "scripts": {
     "build": "npm run build --workspaces",
     "start": "npm run start --workspace=react-suspense-examples",

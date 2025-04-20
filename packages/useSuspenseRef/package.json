@@ -3,6 +3,11 @@
   "version": "0.0.0",
   "main": "build/useSuspenseRef.js",
   "types": "build/useSuspenseRef.d.ts",
+  "author": {
+    "name": "Vik R",
+    "email": "vik120@icloud.com",
+    "url": "http://linkedin.com/in/vikr01/"
+  },
   "scripts": {
     "build": "tsup",
     "test": "echo \"Error: no test specified\" && exit 1"
