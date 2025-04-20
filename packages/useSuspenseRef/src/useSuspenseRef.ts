@@ -7,8 +7,6 @@ import useUnmount from 'react-use/lib/useUnmount';
 const map = new WeakMap();
 const SENTINEL1 = {};
 
-console.log('map', map);
-
 export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
     const suspenseBoundaryRef = useRef<typeof SENTINEL1 | Fiber>(SENTINEL1);
     const ref = useRef<null | React.RefObject<T>>(null);
@@ -38,8 +36,6 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
     // [structuralId, suspenseBoundary]
     );
 
-    console.log('here\'s obj', ref.current);
-
     return ref.current;
 }
 
@@ -51,9 +47,7 @@ function getValue<T>(structuralId: StructuralId, suspenseBoundary: Fiber, initVa
     const boundaryMap = map.get(suspenseBoundary);
 
     if (!boundaryMap.has(structuralId)) {
-        console.log('setting value', structuralId, initValue);
         boundaryMap.set(structuralId, initValue);
-        console.log('boundaryMap', boundaryMap);
     }
 
     return boundaryMap.get(structuralId);

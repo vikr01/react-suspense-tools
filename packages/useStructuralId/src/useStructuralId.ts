@@ -18,7 +18,6 @@ export default function useStructuralId(selector: Selector, dependencies: Readon
     const prevDependenciesRef = useRef<ReadonlyArray<unknown>>(null);
 
     const hookCallIndex = useHookCallIndex();
-    console.log('hookCallIndex', hookCallIndex);
 
     const fiber: Fiber | null = (React as any)?.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE?.A?.getOwner?.() ?? null;
 
@@ -37,17 +36,12 @@ export default function useStructuralId(selector: Selector, dependencies: Readon
             fiber,
             true,
             function(node, ...args) {
-                console.log('node', node);
                 structuralNodes.push([node.elementType, node.key ?? node.index]);
                 return selector?.(node, ...args);
             },
         ) ?? null;
 
-        console.log('structuralNodes', structuralNodes);
-
         structuralIdRef.current = createArrayIdWithNumber(hookCallIndex, structuralNodes);
-
-        // console.log('strlist', structuralNodes);
     }
     
     return [structuralIdRef.current, stopNodeRef.current];
