@@ -9,12 +9,12 @@ export default function App(): React.ReactElement {
     <div className="App">
       <div className="suspense-root">
         <div className="suspense-container">
-          <Suspense>
+          <Suspense fallback={<div>Loading1</div>}>
             <RandomNumberPacket seed="foobar"/>
           </Suspense>
         </div>
         <div className="suspense-container">
-          <Suspense fallback={null}>
+          <Suspense fallback={<div>Loading2</div>}>
             <div/>
             <div/>
             <div/>
