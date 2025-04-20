@@ -6,7 +6,6 @@ export default function createUseHookCallIndex(): () => number {
 
   return function useHookCallIndex(): number {
     const fiber: Object | null = (React as any)?.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE?.A?.getOwner?.() ?? null;
-    console.log('fiber', fiber);
 
     if (fiber == null) {
       throw new Error('useHookCallIndex couldn\'t find an element currently being rendered');

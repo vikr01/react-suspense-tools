@@ -5,16 +5,11 @@ type Key = string | number;
 
 declare const __DEV_STRUCTURAL_ID_DEBUG__: boolean;
 
-// This is just to see the keys as something readable in dev
-// const __DEV_STRUCTURAL_ID_DEBUG__ = false as const;
-console.log('__DEV_STRUCTURAL_ID_DEBUG__', __DEV_STRUCTURAL_ID_DEBUG__);
-
 const objectHashes = new WeakMap<object, string>();
 
 function getElementTypeId(elementType: ElementType): string {
   if (elementType == null) { return 'Unknown'; }
   if (typeof elementType !== 'object' && typeof elementType !== 'function') return elementType.toString();
-  console.log('elementType', elementType);
 
   if (!objectHashes.has(elementType)) {
     let id: string;
