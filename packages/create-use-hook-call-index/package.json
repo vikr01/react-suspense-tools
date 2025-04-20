@@ -3,10 +3,6 @@
   "version": "0.0.0",
   "main": "build/createUseHookCallIndex.js",
   "types": "build/createUseHookCallIndex.d.ts",
-  "type": "module",
-  "exports": {
-    ".": "./src/createUseHookCallIndex.ts"
-  },
   "scripts": {
     "build": "tsup",
     "test": "echo \"Error: no test specified\" && exit 1"
