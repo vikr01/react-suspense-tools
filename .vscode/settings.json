@@ -6,4 +6,6 @@
     "typescript.suggest.enabled": true,
     "typescript.format.enable": true,
     "typescript.validate.enable": true,
+
+    "javascript.suggestionActions.enabled": false,
 }
