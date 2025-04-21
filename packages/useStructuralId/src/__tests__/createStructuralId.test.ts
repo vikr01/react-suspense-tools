@@ -1,8 +1,6 @@
 import * as React from 'react';
 import {createArrayId} from '../createStructuralId';
 
-type Index = number;
-
 Object.defineProperty(global, '__DEV_STRUCTURAL_ID_DEBUG__', {
     value: false, // or false
     writable: true,
@@ -21,7 +19,7 @@ describe('createStructuralId', ()=>{
         const Component4 = React.forwardRef(function Component4() {return null;});
         const Component5 = null;
         const Component6 = React.memo(()=>null);
-        const Component7: 'a' = 'a';
+        const Component7 = 'a' as const;
         const Component8 = null;
 
 

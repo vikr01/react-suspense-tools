@@ -1,6 +1,7 @@
 {
     // Disable flowtype, this is a typescript project
     "flow.enabled": false,
+    "eslint.enable": true,
 
     // Enable typescript for the project
     "typescript.suggest.enabled": true,
