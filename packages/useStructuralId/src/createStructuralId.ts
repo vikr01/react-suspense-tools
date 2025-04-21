@@ -1,7 +1,9 @@
 import { nanoid } from 'nanoid/non-secure';
+import type {Fiber} from 'react-reconciler'
+import type {ComponentType, JSX} from 'react';
 
-type ElementType = string | object | Function;
-type Key = string | number;
+export type ElementType = ComponentType | keyof JSX.IntrinsicElements | null;
+export type Key = NonNullable<Fiber['key']> | Fiber['index'];
 
 declare const __DEV_STRUCTURAL_ID_DEBUG__: boolean;
 
@@ -16,7 +18,8 @@ function getElementTypeId(elementType: ElementType): string {
 
     // This will get stripped out in prod as dead code
     if (process.env.NODE_ENV === 'development' && __DEV_STRUCTURAL_ID_DEBUG__) {
-      id = (elementType as any)?.displayName ?? (elementType as any).name ?? elementType.toString();
+      console.log(__DEV_STRUCTURAL_ID_DEBUG__);
+      id = (elementType as any)?.displayName ?? (elementType as any).name ?? 'Fallback';
     } else {
       id = nanoid(6);
     }
@@ -36,7 +39,7 @@ export function createArrayId(
     const [elementType, key] = arr[i];
     const elementTypeId = getElementTypeId(elementType);
     const encodedKey =
-      typeof key === 'string' ? `s:${key}` : `n:${key}`;
+      typeof key === 'string' ? `s:${key}` : `n:${key.toString()}`;
     parts.push(`${elementTypeId}:${encodedKey}`);
   }
 

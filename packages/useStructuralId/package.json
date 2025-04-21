@@ -13,7 +13,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "its-fine": "^2.0.0"
+    "its-fine": "^2.0.0",
+    "type-fest": "^4.40.0"
   },
   "devDependencies": {
     "react": "^19.0.0"
