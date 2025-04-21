@@ -20,6 +20,7 @@ export default function useStructuralId(selector: Selector, dependencies: Readon
 
     const hookCallIndex = useHookCallIndex();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fiber: Fiber | null = (React as any)?.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE?.A?.getOwner?.() ?? null;
 
     if (fiber == null) {

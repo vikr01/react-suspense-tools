@@ -19,6 +19,7 @@ function getElementTypeId(elementType: ElementType): string {
     // This will get stripped out in prod as dead code
     if (process.env.NODE_ENV === 'development' && __DEV_STRUCTURAL_ID_DEBUG__) {
       console.log(__DEV_STRUCTURAL_ID_DEBUG__);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       id = (elementType as any)?.displayName ?? (elementType as any).name ?? 'Fallback';
     } else {
       id = nanoid(6);

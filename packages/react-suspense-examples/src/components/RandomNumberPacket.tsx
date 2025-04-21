@@ -1,9 +1,9 @@
 import * as React from 'react';
-import getRandomNumberPacket from "../api/getRandomNumberPacket";
+// import getRandomNumberPacket from "../api/getRandomNumberPacket";
 import { JsonView, allExpanded} from 'react-json-view-lite';
 import useSuspenseRef from 'use-suspense-ref';
 
-const promise = getRandomNumberPacket('5');
+// const promise = getRandomNumberPacket('5');
 
 type Props = {
     seed: string,

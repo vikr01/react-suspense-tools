@@ -1,6 +1,5 @@
 import './App.css';
 import {Suspense} from 'react';
-import { FiberProvider } from 'its-fine';
 import * as React from 'react';
 import RandomNumberPacket from './RandomNumberPacket';
 
@@ -25,5 +24,3 @@ export default function App(): React.ReactElement {
     </div>
   );
 }
-
-type T = React.Component;

@@ -2,10 +2,11 @@ import * as React from 'react';
 
 export default function createUseHookCallIndex(): () => number {
   let counter = 0;
-  let prevFiber: Object | null = null;
+  let prevFiber: object | null = null;
 
   return function useHookCallIndex(): number {
-    const fiber: Object | null = (React as any)?.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE?.A?.getOwner?.() ?? null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fiber: object | null = (React as any)?.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE?.A?.getOwner?.() ?? null;
 
     if (fiber == null) {
       throw new Error('useHookCallIndex couldn\'t find an element currently being rendered');

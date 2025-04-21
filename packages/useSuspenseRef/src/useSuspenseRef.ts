@@ -11,7 +11,7 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
     const suspenseBoundaryRef = useRef<typeof SENTINEL1 | Fiber>(SENTINEL1);
     const ref = useRef<null | React.RefObject<T>>(null);
     
-    const [structuralId, suspenseBoundary] = useStructuralId((node: Fiber<any>) => {
+    const [structuralId, suspenseBoundary] = useStructuralId((node: Fiber) => {
         const res = node.elementType === React.Suspense;
         return res;
     }, []);
