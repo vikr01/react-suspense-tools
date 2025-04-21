@@ -44,7 +44,7 @@ describe('useStructuralId', () => {
 
         const [structuralId, stopNode] = result.current;
 
-        expect(structuralId).toMatchInlineSnapshot(`"0:TestComponent:n:0,Component5:n:0,Component4:n:0,Component3:n:0,Component2:n:0,Component1:n:0,Unknown:n:0"`);
+        expect(structuralId).toMatchInlineSnapshot(`"0:TestComponent:n[0],Component5:n[0],Component4:n[0],Component3:n[0],Component2:n[0],Component1:n[0],Unknown:n[0]"`);
 
         expect(stopNode).toBeNull();
     });
@@ -57,7 +57,7 @@ describe('useStructuralId', () => {
 
         const [structuralId, stopNode] = result.current;
 
-        expect(structuralId).toMatchInlineSnapshot(`"0:TestComponent:n:0,Component5:n:0,Component4:n:0,Component3:n:0"`);
+        expect(structuralId).toMatchInlineSnapshot(`"0:TestComponent:n[0],Component5:n[0],Component4:n[0],Component3:n[0]"`);
 
         expect(stopNode?.elementType).toBe(components.Component3);
     });
