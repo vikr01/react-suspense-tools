@@ -1,6 +1,8 @@
 import * as React from "react";
 import { createArrayId, clear } from "../createStructuralId";
 
+type ElementsArray = Parameters<typeof createArrayId>[0];
+
 Object.defineProperty(global, "__DEV_STRUCTURAL_ID_DEBUG__", {
   value: false,
   writable: true,
@@ -12,25 +14,26 @@ describe("createStructuralId", () => {
     clear();
   });
 
-  function Component1() {
+  function Component0() {
     return null;
   }
-  const Component2 = () => null;
-  class Component3 extends React.Component {
+  const Component1 = () => null;
+  class Component2 extends React.Component {
     render() {
       return null;
     }
   }
-  const Component4 = React.forwardRef(function Component4() {
+  const Component3 = React.forwardRef(function Component4() {
     return null;
   });
-  const Component5 = null;
-  const Component6 = React.memo(() => null);
-  const Component7 = "a" as const;
-  const Component8 = null;
+  const Component4 = null;
+  const Component5 = React.memo(() => null);
+  const Component6 = "a" as const;
+  const Component7 = null;
 
   it("genereates a string from elements with various element types", () => {
     const components = [
+      Component0,
       Component1,
       Component2,
       Component3,
@@ -38,24 +41,21 @@ describe("createStructuralId", () => {
       Component5,
       Component6,
       Component7,
-      Component8,
     ];
 
-    const values = declareElementsArray(components.map((comp) => [comp, 0]));
+    const values = components.map((comp) => [comp, 0]) as ElementsArray;
 
     const id = createArrayId(values);
-    expect(id).toMatchInlineSnapshot(
-      `"000000:n[0],000001:n[0],000002:n[0],000003:n[0],Unknown:n[0],000004:n[0],a:n[0],Unknown:n[0]"`,
-    );
+    expect(id).toMatchSnapshot();
   });
 
   it("properly reuses ids of component pointers", () => {
-    const components = declareElementsArray([
+    const components = [
       [Component2, "foobar"],
       [Component3, "bazfoo"],
       [Component4, 10],
       [Component7, 15],
-    ]);
+    ] as ElementsArray;
 
     const [component3uniqueId] = createArrayId(components)
       .split(",")[1]
@@ -73,23 +73,15 @@ describe("createStructuralId", () => {
       configurable: true,
     });
 
-    const components = declareElementsArray([
-      [Component8, 503],
-      [Component4, "baz"],
-      [Component6, 11555],
-      [Component1, "null"],
-    ]);
+    const components = [
+      [Component7, 503],
+      [Component3, "baz"],
+      [Component5, 11555],
+      [Component0, "null"],
+    ] as ElementsArray;
 
     const id = createArrayId(components);
 
-    expect(id).toMatchInlineSnapshot(
-      `"Unknown:n[503],Fallback:s[baz],Fallback:n[11555],Component1:s[null]"`,
-    );
+    expect(id).toMatchSnapshot();
   });
 });
-
-function declareElementsArray<T extends Parameters<typeof createArrayId>[0]>(
-  value: T,
-): T {
-  return value;
-}
