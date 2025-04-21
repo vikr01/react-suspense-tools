@@ -4,7 +4,7 @@ import {createArrayId} from '../createStructuralId';
 type Index = number;
 
 Object.defineProperty(global, '__DEV_STRUCTURAL_ID_DEBUG__', {
-    value: true, // or false
+    value: false, // or false
     writable: true,
     configurable: true,
 });
@@ -40,6 +40,6 @@ describe('createStructuralId', ()=>{
         const values: Parameters<typeof createArrayId>[0] = components.map((comp)=>[comp, 0]);
 
         const id = createArrayId(values);
-        expect(id).toMatchInlineSnapshot(`"Component1:n:0,Component2:n:0,Component3:n:0,Fallback:n:0,Unknown:n:0,Fallback:n:0,a:n:0,Unknown:n:0"`);
+        expect(id).toMatchInlineSnapshot(`"000000:n:0,000001:n:0,000002:n:0,000003:n:0,Unknown:n:0,000004:n:0,a:n:0,Unknown:n:0"`);
     });
 });

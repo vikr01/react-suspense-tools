@@ -15,4 +15,7 @@ export default {
         '__DEV_STRUCTURAL_ID_DEBUG__': JSON.stringify(false),
     },
     setupFiles: [require.resolve('./testing/jest.setup.js'), require.resolve('./testing/jest.console-filter.js')],
+    moduleNameMapper: {
+       'nanoid/non-secure': require.resolve('mock-nanoid/non-secure'),
+    },
 };
