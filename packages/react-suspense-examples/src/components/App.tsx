@@ -1,7 +1,7 @@
-import './App.css';
-import {Suspense} from 'react';
-import * as React from 'react';
-import RandomNumberPacket from './RandomNumberPacket';
+import "./App.css";
+import { Suspense } from "react";
+import * as React from "react";
+import RandomNumberPacket from "./RandomNumberPacket";
 
 export default function App(): React.ReactElement {
   return (
@@ -9,15 +9,15 @@ export default function App(): React.ReactElement {
       <div className="suspense-root">
         <div className="suspense-container">
           <Suspense fallback={<div>Loading1</div>}>
-            <RandomNumberPacket seed="foobar"/>
+            <RandomNumberPacket seed="foobar" />
           </Suspense>
         </div>
         <div className="suspense-container">
           <Suspense fallback={<div>Loading2</div>}>
-            <div/>
-            <div/>
-            <div/>
-            <RandomNumberPacket seed="barfoo"/>
+            <div />
+            <div />
+            <div />
+            <RandomNumberPacket seed="barfoo" />
           </Suspense>
         </div>
       </div>
