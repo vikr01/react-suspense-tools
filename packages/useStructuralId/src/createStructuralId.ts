@@ -1,26 +1,34 @@
-import { nanoid } from 'nanoid/non-secure';
-import type {Fiber} from 'react-reconciler'
-import type {ComponentType, JSX} from 'react';
+import { nanoid } from "nanoid/non-secure";
+import type { Fiber } from "react-reconciler";
+import type { ComponentType, JSX } from "react";
 
 export type ElementType = ComponentType | keyof JSX.IntrinsicElements | null;
-export type Key = NonNullable<Fiber['key']> | Fiber['index'];
+export type Key = NonNullable<Fiber["key"]> | Fiber["index"];
 
 declare const __DEV_STRUCTURAL_ID_DEBUG__: boolean;
 
 let objectHashes = new WeakMap<object, string>();
 
 function getElementTypeId(elementType: ElementType): string {
-  if (elementType == null) { return 'Unknown'; }
-  if (typeof elementType !== 'object' && typeof elementType !== 'function') return elementType.toString();
+  if (elementType == null) {
+    return "Unknown";
+  }
+  if (typeof elementType !== "object" && typeof elementType !== "function")
+    return elementType.toString();
 
   if (!objectHashes.has(elementType)) {
     let id: string;
 
     // This will get stripped out in prod as dead code
-    if (process.env.NODE_ENV === 'development' && __DEV_STRUCTURAL_ID_DEBUG__) {
+    if (process.env.NODE_ENV === "development" && __DEV_STRUCTURAL_ID_DEBUG__) {
       console.log(__DEV_STRUCTURAL_ID_DEBUG__);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      id = (elementType as any)?.displayName ?? (elementType as any).name ?? 'Fallback';
+
+      id =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (elementType as any)?.displayName ??
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (elementType as any).name ??
+        "Fallback";
     } else {
       id = nanoid(6);
     }
@@ -31,25 +39,23 @@ function getElementTypeId(elementType: ElementType): string {
   return objectHashes.get(elementType)!;
 }
 
-export function createArrayId(
-  arr: ReadonlyArray<[ElementType, Key]>
-): string {
+export function createArrayId(arr: ReadonlyArray<[ElementType, Key]>): string {
   const parts: string[] = [];
 
   for (let i = 0; i < arr.length; i++) {
     const [elementType, key] = arr[i];
     const elementTypeId = getElementTypeId(elementType);
     const encodedKey =
-      typeof key === 'string' ? `s[${key}]` : `n[${key.toString()}]`;
+      typeof key === "string" ? `s[${key}]` : `n[${key.toString()}]`;
     parts.push(`${elementTypeId}:${encodedKey}`);
   }
 
-  return parts.join(',');
+  return parts.join(",");
 }
 
 export function createArrayIdWithNumber(
   num: number,
-  arr: ReadonlyArray<[ElementType, Key]>
+  arr: ReadonlyArray<[ElementType, Key]>,
 ): string {
   return `${num}:${createArrayId(arr)}`;
 }
