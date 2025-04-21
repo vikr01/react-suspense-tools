@@ -3,6 +3,7 @@ import {traverseFiber, type Fiber} from 'its-fine';
 import {useRef} from 'react';
 import createUseHookCallIndex from 'create-use-hook-call-index';
 import {createArrayIdWithNumber} from './createStructuralId'
+import type {Writable} from 'type-fest';
 
 const useHookCallIndex = createUseHookCallIndex();
 
@@ -29,7 +30,7 @@ export default function useStructuralId(selector: Selector, dependencies: Readon
     prevDependenciesRef.current = dependencies;
 
     if (structuralIdRef.current == null || prevDependencies == null || !arrMatch(prevDependencies, dependencies)) {
-        const structuralNodes: Array<[Fiber, string | number]> = [];
+        const structuralNodes: Writable<Parameters<typeof createArrayIdWithNumber>[1]> = [];
 
         structuralIdRef.current = 'foo';
         stopNodeRef.current = traverseFiber(
