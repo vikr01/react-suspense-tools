@@ -7,7 +7,7 @@ export type Key = NonNullable<Fiber['key']> | Fiber['index'];
 
 declare const __DEV_STRUCTURAL_ID_DEBUG__: boolean;
 
-const objectHashes = new WeakMap<object, string>();
+let objectHashes = new WeakMap<object, string>();
 
 function getElementTypeId(elementType: ElementType): string {
   if (elementType == null) { return 'Unknown'; }
@@ -40,7 +40,7 @@ export function createArrayId(
     const [elementType, key] = arr[i];
     const elementTypeId = getElementTypeId(elementType);
     const encodedKey =
-      typeof key === 'string' ? `s:${key}` : `n:${key.toString()}`;
+      typeof key === 'string' ? `s[${key}]` : `n[${key.toString()}]`;
     parts.push(`${elementTypeId}:${encodedKey}`);
   }
 
@@ -52,4 +52,8 @@ export function createArrayIdWithNumber(
   arr: ReadonlyArray<[ElementType, Key]>
 ): string {
   return `${num}:${createArrayId(arr)}`;
+}
+
+export function clear() {
+  objectHashes = new WeakMap();
 }
