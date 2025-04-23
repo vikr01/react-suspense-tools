@@ -52,9 +52,9 @@ describe("useSuspenseRef", () => {
     expect(suspenseRef.current).toBe(expectedResult2);
   });
 
-  it("can store a value across suspends", async () => {
-    const expectedResult1: unique symbol = Symbol();
-    const expectedResult2: unique symbol = Symbol();
+  it("can maintain a value across suspends", async () => {
+    const expectedResult1: unique symbol = Symbol(1);
+    const expectedResult2: unique symbol = Symbol(2);
 
     type RefType = typeof expectedResult1 | typeof expectedResult2;
 
@@ -66,6 +66,8 @@ describe("useSuspenseRef", () => {
 
     suspenseRef1.current = expectedResult2;
 
+    expect(screen.queryByTestId(loadingTestId)).toBeNull();
+
     const unsuspend = await suspend();
 
     expect(screen.queryByTestId(loadingTestId)).not.toBeNull();
@@ -75,10 +77,14 @@ describe("useSuspenseRef", () => {
     expect(screen.queryByTestId(loadingTestId)).toBeNull();
 
     const suspenseRef2 = getSuspenseRef();
+    /**
+     * react testing library doesn't truly suspend,
+     * it just sets display: none and *hides* the existing element.
+     * So, we can't actually test that the pointers of suspenseRef1 and suspenseRef 2 are different,
+     * because they are the same, since the React element was never taken out of the DOM
+     */
 
-    expect(suspenseRef2).not.toBe(suspenseRef1); // different pointers...
-
-    expect(suspenseRef2.current).toBe(suspenseRef1.current); // ...but same value
+    expect(suspenseRef2.current).toBe(suspenseRef1.current);
   });
 
   // it("destroys the ref if the component is destroyed via error", () => {});
@@ -86,6 +92,8 @@ describe("useSuspenseRef", () => {
   // it("destroys the ref if the structure changes", () => {});
 
   // it("preserves the ref when it suspends to do another component suspending", () => {});
+
+  // it("can have multiple promise refs from the same component", () => {});
 });
 
 function SuspenseComponentTree({ children }: { children: React.ReactNode }) {
@@ -178,6 +186,7 @@ function renderHook<T>(useHook: () => T): [GetRef<T>, Rerender, Suspend] {
   const suspend = () =>
     act(() => {
       const [promise, unsuspend] = createSuspender();
+      hookValueRef.current = SENTINEL;
       valueForUse = promise;
 
       rerender();
