@@ -73,6 +73,12 @@ describe("useSuspenseRef", () => {
     await unsuspend();
 
     expect(screen.queryByTestId(loadingTestId)).toBeNull();
+
+    const suspenseRef2 = getSuspenseRef();
+
+    expect(suspenseRef2).not.toBe(suspenseRef1); // different pointers...
+
+    expect(suspenseRef2.current).toBe(suspenseRef1.current); // ...but same value
   });
 
   // it("destroys the ref if the component is destroyed via error", () => {});
