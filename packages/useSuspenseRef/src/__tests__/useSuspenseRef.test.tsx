@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
-import { useImperativeHandle, Suspense } from "react";
+import { createContext, use, useImperativeHandle, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { render } from "@testing-library/react";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import useSuspenseRef, { clearSuspenseRefs } from "../useSuspenseRef";
+
+const loadingTestId = "loader1";
 
 describe("useSuspenseRef", () => {
   afterEach(() => {
+    cleanup();
     clearSuspenseRefs();
   });
 
@@ -45,18 +48,26 @@ describe("useSuspenseRef", () => {
     expect(suspenseRef.current).toBe(expectedResult2);
   });
 
-  // it("can store a value across suspends", async () => {
-  //   const expectedResult1: unique symbol = Symbol();
-  //   const expectedResult2: unique symbol = Symbol();
+  it("can store a value across suspends", async () => {
+    const expectedResult1: unique symbol = Symbol();
+    const expectedResult2: unique symbol = Symbol();
 
-  //   type RefType = typeof expectedResult1 | typeof expectedResult2;
+    type RefType = typeof expectedResult1 | typeof expectedResult2;
 
-  //   const [suspenseRef, , suspend] = renderHook(() =>
-  //     useSuspenseRef<RefType>(expectedResult1),
-  //   );
+    const [suspenseRef, , suspend] = renderHook(() =>
+      useSuspenseRef<RefType>(expectedResult1),
+    );
 
-  //   suspenseRef.current = expectedResult2;
-  // });
+    suspenseRef.current = expectedResult2;
+
+    const unsuspend = await suspend();
+
+    expect(screen.queryByTestId(loadingTestId)).not.toBeNull();
+
+    await unsuspend();
+
+    expect(screen.queryByTestId(loadingTestId)).toBeNull();
+  });
 
   // it("destroys the ref if the component is destroyed via error", () => {});
 
@@ -68,7 +79,7 @@ describe("useSuspenseRef", () => {
 function SuspenseComponentTree({ children }: { children: React.ReactNode }) {
   return (
     <Suspense fallback={<div data-testid="unused-loader" />}>
-      <Suspense fallback={<div data-testid="loader1" />}>
+      <Suspense fallback={<div data-testid={loadingTestId} />}>
         <ErrorBoundary fallback={<div data-test-id="error1" />}>
           {children}
         </ErrorBoundary>
@@ -103,30 +114,70 @@ function HookComponent<T>({
   return null;
 }
 
+const fakeContext = createContext<void>(undefined);
+
 const SENTINEL: unique symbol = Symbol();
 
-function renderHook<T>(hook: () => T): [T, () => void] {
+type Rerender = () => void;
+type Unsuspend = () => Promise<void>;
+type Suspend = () => Promise<Unsuspend>;
+
+function renderHook<T>(useHook: () => T): [T, Rerender, Suspend] {
+  let valueForUse: Promise<void> | typeof fakeContext = fakeContext;
+
+  const useHookWithSuspender = () => {
+    const res = useHook();
+    use(valueForUse);
+
+    return res;
+  };
+
   const hookValueRef: React.RefObject<typeof SENTINEL | T> = {
     current: SENTINEL,
   };
 
-  const renderResult = render(
+  const makeElement = () => (
     <SuspenseComponentTree>
-      <HookComponent hook={hook} hookValueRef={hookValueRef} />
-    </SuspenseComponentTree>,
+      <HookComponent hook={useHookWithSuspender} hookValueRef={hookValueRef} />
+    </SuspenseComponentTree>
   );
+
+  const renderResult = render(makeElement());
 
   if (hookValueRef.current === SENTINEL) {
     throw new Error("hook was never set");
   }
 
   const rerender = () => {
-    renderResult.rerender(
-      <SuspenseComponentTree>
-        <HookComponent hook={hook} hookValueRef={hookValueRef} />
-      </SuspenseComponentTree>,
-    );
+    renderResult.rerender(makeElement());
   };
 
-  return [hookValueRef.current, rerender];
+  const suspend = () =>
+    act(() => {
+      const [promise, unsuspend] = createSuspender();
+      valueForUse = promise;
+
+      rerender();
+      return () => act(() => unsuspend().then(rerender));
+    });
+
+  return [hookValueRef.current, rerender, suspend];
+}
+
+type Resolve = null | ((...args: unknown[]) => unknown);
+
+function createSuspender(): [Promise<void>, Unsuspend] {
+  let resolve: Resolve = null;
+
+  const promise = new Promise((_resolve) => {
+    resolve = _resolve;
+    return;
+  }).then(() => {});
+
+  const unsuspend = async () => {
+    resolve?.();
+    await promise;
+  };
+
+  return [promise, unsuspend];
 }
