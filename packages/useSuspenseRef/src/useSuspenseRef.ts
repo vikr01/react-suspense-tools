@@ -4,7 +4,7 @@ import type { Fiber } from "its-fine";
 import useStructuralId, { type StructuralId } from "use-structural-id";
 import useUnmount from "react-use/lib/useUnmount";
 
-const map = new WeakMap();
+let map = new WeakMap();
 const SENTINEL1 = {};
 
 export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
@@ -69,6 +69,7 @@ function setValue<T>(
 
   const boundaryMap = map.get(suspenseBoundary);
   boundaryMap.set(structuralId, value);
+  console.log("successfully set", value);
 }
 
 function createKeyListener<T>(
@@ -78,13 +79,11 @@ function createKeyListener<T>(
 ): React.RefObject<T> {
   const o = {};
 
-  const val = getValue(structuralId, suspenseBoundary, initValue);
-
   Object.defineProperty(o, "current", {
     enumerable: true,
     configurable: false,
     get() {
-      return val;
+      return getValue(structuralId, suspenseBoundary, initValue);
     },
     set(v) {
       setValue(structuralId, suspenseBoundary, v);
@@ -92,4 +91,8 @@ function createKeyListener<T>(
   });
 
   return o as React.RefObject<T>;
+}
+
+export function clearSuspenseRefs() {
+  map = new WeakMap();
 }
