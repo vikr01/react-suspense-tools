@@ -37,6 +37,7 @@
     "mock-nanoid": "^0.2.0",
     "npm-run": "^5.0.1",
     "prettier": "^3.5.3",
+    "react-error-boundary": "^5.0.0",
     "ts-jest": "^29.3.2",
     "tsup": "^8.4.0",
     "typescript-eslint": "^8.30.1"
