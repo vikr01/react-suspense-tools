@@ -16,9 +16,11 @@ describe("useSuspenseRef", () => {
   it("can maintain an initialized value", () => {
     const expectedResult = {};
 
-    const [suspenseRef, rerender] = renderHook(() =>
+    const [getSuspenseRef, rerender] = renderHook(() =>
       useSuspenseRef(expectedResult),
     );
+
+    const suspenseRef = getSuspenseRef();
 
     expect(suspenseRef.current).toBe(expectedResult);
 
@@ -33,9 +35,11 @@ describe("useSuspenseRef", () => {
 
     type RefType = typeof expectedResult1 | typeof expectedResult2;
 
-    const [suspenseRef, rerender] = renderHook(() =>
+    const [getSuspenseRef, rerender] = renderHook(() =>
       useSuspenseRef<RefType>(expectedResult1),
     );
+
+    const suspenseRef = getSuspenseRef();
 
     expect(suspenseRef.current).toBe(expectedResult1);
 
@@ -54,11 +58,13 @@ describe("useSuspenseRef", () => {
 
     type RefType = typeof expectedResult1 | typeof expectedResult2;
 
-    const [suspenseRef, , suspend] = renderHook(() =>
+    const [getSuspenseRef, , suspend] = renderHook(() =>
       useSuspenseRef<RefType>(expectedResult1),
     );
 
-    suspenseRef.current = expectedResult2;
+    const suspenseRef1 = getSuspenseRef();
+
+    suspenseRef1.current = expectedResult2;
 
     const unsuspend = await suspend();
 
@@ -121,8 +127,9 @@ const SENTINEL: unique symbol = Symbol();
 type Rerender = () => void;
 type Unsuspend = () => Promise<void>;
 type Suspend = () => Promise<Unsuspend>;
+type GetRef<T> = () => T;
 
-function renderHook<T>(useHook: () => T): [T, Rerender, Suspend] {
+function renderHook<T>(useHook: () => T): [GetRef<T>, Rerender, Suspend] {
   let valueForUse: Promise<void> | typeof fakeContext = fakeContext;
 
   const useHookWithSuspender = () => {
@@ -148,6 +155,16 @@ function renderHook<T>(useHook: () => T): [T, Rerender, Suspend] {
     throw new Error("hook was never set");
   }
 
+  const getResult = () => {
+    const res = hookValueRef.current;
+
+    if (res === SENTINEL) {
+      throw new Error("ref was never set");
+    }
+
+    return res;
+  };
+
   const rerender = () => {
     renderResult.rerender(makeElement());
   };
@@ -161,7 +178,7 @@ function renderHook<T>(useHook: () => T): [T, Rerender, Suspend] {
       return () => act(() => unsuspend().then(rerender));
     });
 
-  return [hookValueRef.current, rerender, suspend];
+  return [getResult, rerender, suspend];
 }
 
 type Resolve = null | ((...args: unknown[]) => unknown);
