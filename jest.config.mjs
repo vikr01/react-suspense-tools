@@ -14,6 +14,9 @@ export default {
     "^.+\\.(css|less|scss|sass)$": "jest-transform-stub",
   },
   testPathIgnorePatterns: ["/node_modules/", "/build/"],
+  testMatch: [
+    "**/__tests__/**/*.(test|spec).(ts|tsx|js|jsx)", // Match only .test.ts/.test.tsx/.test.js/.test.jsx files in __tests__ folders
+  ],
   globals: {
     __DEV_STRUCTURAL_ID_DEBUG__: JSON.stringify(false),
   },

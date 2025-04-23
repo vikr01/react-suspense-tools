@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
 import { createContext, use, useImperativeHandle, Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import useSuspenseRef, { clearSuspenseRefs } from "../useSuspenseRef";
+import { default as ErrorBoundary } from "./utils/RecoverableErrorBoundary";
 
 const loadingTestId = "loader1";
 
@@ -96,11 +96,22 @@ describe("useSuspenseRef", () => {
   // it("can have multiple promise refs from the same component", () => {});
 });
 
-function SuspenseComponentTree({ children }: { children: React.ReactNode }) {
+function SuspenseComponentTree({
+  children,
+  resetErrorRef,
+}: {
+  children: React.ReactNode;
+  resetErrorRef: React.ComponentPropsWithoutRef<
+    typeof ErrorBoundary
+  >["resetErrorRef"];
+}) {
   return (
     <Suspense fallback={<div data-testid="unused-loader" />}>
       <Suspense fallback={<div data-testid={loadingTestId} />}>
-        <ErrorBoundary fallback={<div data-test-id="error1" />}>
+        <ErrorBoundary
+          fallback={<div data-test-id="error1" />}
+          resetErrorRef={resetErrorRef}
+        >
           {children}
         </ErrorBoundary>
       </Suspense>
@@ -124,12 +135,21 @@ function useSuspenseRefTwice<T, V>(
 function HookComponent<T>({
   hook: useHook,
   hookValueRef,
+  forceErrorRef,
 }: {
   hook: () => T;
   hookValueRef: React.Ref<T>;
+  forceErrorRef: React.Ref<unknown | (() => void)>;
 }) {
+  const [state, setState] = React.useState(false);
+  if (state === true) {
+    throw new Error("forced an error");
+  }
   const res = useHook();
   useImperativeHandle(hookValueRef, () => res);
+  useImperativeHandle(forceErrorRef, () => () => {
+    setState(true);
+  });
 
   return null;
 }
@@ -138,12 +158,16 @@ const fakeContext = createContext<void>(undefined);
 
 const SENTINEL: unique symbol = Symbol();
 
+type GetRef<T> = () => T;
 type Rerender = () => void;
 type Unsuspend = () => Promise<void>;
 type Suspend = () => Promise<Unsuspend>;
-type GetRef<T> = () => T;
+type ResetError = () => Promise<void>;
+type ForceError = () => Promise<ResetError>;
 
-function renderHook<T>(useHook: () => T): [GetRef<T>, Rerender, Suspend] {
+function renderHook<T>(
+  useHook: () => T,
+): [GetRef<T>, Rerender, Suspend, ForceError] {
   let valueForUse: Promise<void> | typeof fakeContext = fakeContext;
 
   const useHookWithSuspender = () => {
@@ -157,9 +181,21 @@ function renderHook<T>(useHook: () => T): [GetRef<T>, Rerender, Suspend] {
     current: SENTINEL,
   };
 
+  const resetErrorRef: React.RefObject<null | (() => void)> = {
+    current: null,
+  };
+
+  const forceErrorRef: React.RefObject<null | (() => void)> = {
+    current: null,
+  };
+
   const makeElement = () => (
-    <SuspenseComponentTree>
-      <HookComponent hook={useHookWithSuspender} hookValueRef={hookValueRef} />
+    <SuspenseComponentTree resetErrorRef={resetErrorRef}>
+      <HookComponent
+        hook={useHookWithSuspender}
+        hookValueRef={hookValueRef}
+        forceErrorRef={forceErrorRef}
+      />
     </SuspenseComponentTree>
   );
 
@@ -193,7 +229,18 @@ function renderHook<T>(useHook: () => T): [GetRef<T>, Rerender, Suspend] {
       return () => act(() => unsuspend().then(rerender));
     });
 
-  return [getResult, rerender, suspend];
+  const forceError = async () => {
+    await act<void>(() => forceErrorRef.current?.());
+
+    const resetError = () =>
+      act<void>(() => {
+        resetErrorRef.current?.();
+      });
+
+    return resetError;
+  };
+
+  return [getResult, rerender, suspend, forceError];
 }
 
 type Resolve = null | ((...args: unknown[]) => unknown);
