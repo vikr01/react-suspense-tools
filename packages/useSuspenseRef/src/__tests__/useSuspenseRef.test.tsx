@@ -6,6 +6,8 @@ import useSuspenseRef, { clearSuspenseRefs } from "../useSuspenseRef";
 import { default as ErrorBoundary } from "./utils/RecoverableErrorBoundary";
 
 const loadingTestId = "loader1";
+const hookElementTestId = "hook-element";
+const errorBoundaryFallbackTestId = "error-boundary-fallback";
 
 describe("useSuspenseRef", () => {
   afterEach(() => {
@@ -87,7 +89,27 @@ describe("useSuspenseRef", () => {
     expect(suspenseRef2.current).toBe(suspenseRef1.current);
   });
 
-  // it("destroys the ref if the component is destroyed via error", () => {});
+  // it("destroys the ref if the component is destroyed via error", async () => {
+  //   const expectedResult1: unique symbol = Symbol(1);
+
+  //   type RefType = typeof expectedResult1;
+
+  //   const [getSuspenseRef, , , forceError] = renderHook(() =>
+  //     useSuspenseRef<RefType>(expectedResult1),
+  //   );
+
+  //   const suspenseRef = getSuspenseRef();
+
+  //   const resetError = await forceError();
+
+  //   expect(screen.queryByTestId(hookElementTestId)).toBeNull();
+
+  //   // expect(() => suspenseRef.current).toThrow();
+
+  //   console.log("received", suspenseRef.current);
+
+  //   expect(screen.queryByTestId(errorBoundaryFallbackTestId)).not.toBeNull();
+  // });
 
   // it("destroys the ref if the structure changes", () => {});
 
@@ -109,7 +131,7 @@ function SuspenseComponentTree({
     <Suspense fallback={<div data-testid="unused-loader" />}>
       <Suspense fallback={<div data-testid={loadingTestId} />}>
         <ErrorBoundary
-          fallback={<div data-test-id="error1" />}
+          fallback={<div data-test-id={errorBoundaryFallbackTestId} />}
           resetErrorRef={resetErrorRef}
         >
           {children}
@@ -151,7 +173,7 @@ function HookComponent<T>({
     setState(true);
   });
 
-  return null;
+  return <div data-testid={hookElementTestId} />;
 }
 
 const fakeContext = createContext<void>(undefined);
