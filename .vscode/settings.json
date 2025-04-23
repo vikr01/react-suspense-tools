@@ -9,4 +9,9 @@
     "typescript.validate.enable": true,
 
     "javascript.suggestionActions.enabled": false,
+
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "always",
+        "source.fixAll.ts": "always",
+    },
 }
