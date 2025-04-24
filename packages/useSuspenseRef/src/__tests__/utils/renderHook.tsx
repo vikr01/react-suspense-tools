@@ -10,9 +10,19 @@ const fakeContext = createContext<void>(undefined);
 
 const SENTINEL: unique symbol = Symbol();
 
-export default function renderHook<T>(
-  useHook: () => T,
-): [GetRef<T>, Rerender, Suspend, ForceError] {
+type RenderProps = {
+  siblingSuspender: Promise<void> | typeof fakeContext;
+};
+
+type RenderHookReturn<T> = {
+  getSuspenseRef: GetRef<T>;
+  rerender: Rerender;
+  suspend: Suspend;
+  suspendSibling: Suspend;
+  forceError: ForceError;
+};
+
+export default function renderHook<T>(useHook: () => T): RenderHookReturn<T> {
   let valueForUse: Promise<void> | typeof fakeContext = fakeContext;
 
   const useHookWithSuspender = () => {
@@ -34,13 +44,16 @@ export default function renderHook<T>(
     current: null,
   };
 
-  const makeElement = () => (
+  const makeElement = (
+    { siblingSuspender }: RenderProps = { siblingSuspender: fakeContext },
+  ) => (
     <SuspenseComponentTree resetErrorRef={resetErrorRef}>
       <HookComponent
         hook={useHookWithSuspender}
         hookValueRef={hookValueRef}
         forceErrorRef={forceErrorRef}
       />
+      <SiblingComponent suspender={siblingSuspender} />
     </SuspenseComponentTree>
   );
 
@@ -50,7 +63,7 @@ export default function renderHook<T>(
     throw new Error("hook was never set");
   }
 
-  const getResult = () => {
+  const getSuspenseRef = () => {
     const res = hookValueRef.current;
 
     if (res === SENTINEL) {
@@ -60,8 +73,8 @@ export default function renderHook<T>(
     return res;
   };
 
-  const rerender = () => {
-    renderResult.rerender(makeElement());
+  const rerender = (renderProps?: RenderProps) => {
+    renderResult.rerender(makeElement(renderProps));
   };
 
   const suspend = () =>
@@ -71,7 +84,7 @@ export default function renderHook<T>(
       valueForUse = promise;
 
       rerender();
-      return () => act(() => unsuspend().then(rerender));
+      return () => act(() => unsuspend().then(() => rerender()));
     });
 
   function handleTopLevelError(event: Event) {
@@ -92,5 +105,26 @@ export default function renderHook<T>(
     return resetError;
   };
 
-  return [getResult, rerender, suspend, forceError];
+  const suspendSibling = () =>
+    act(async () => {
+      const [promise, unsuspend] = createSuspender();
+
+      rerender({ siblingSuspender: promise });
+
+      return () =>
+        act(() =>
+          unsuspend().then(() => rerender({ siblingSuspender: promise })),
+        );
+    });
+
+  return { getSuspenseRef, rerender, suspend, forceError, suspendSibling };
+}
+
+function SiblingComponent({
+  suspender,
+}: {
+  suspender: Promise<void> | typeof fakeContext;
+}) {
+  use(suspender);
+  return null;
 }
