@@ -18,7 +18,7 @@ describe("useSuspenseRef", () => {
   it("can maintain an initialized value", () => {
     const expectedResult = {};
 
-    const [getSuspenseRef, rerender] = renderHook(() =>
+    const { getSuspenseRef, rerender } = renderHook(() =>
       useSuspenseRef(expectedResult),
     );
 
@@ -37,7 +37,7 @@ describe("useSuspenseRef", () => {
 
     type RefType = typeof expectedResult1 | typeof expectedResult2;
 
-    const [getSuspenseRef, rerender] = renderHook(() =>
+    const { getSuspenseRef, rerender } = renderHook(() =>
       useSuspenseRef<RefType>(expectedResult1),
     );
 
@@ -60,7 +60,7 @@ describe("useSuspenseRef", () => {
 
     type RefType = typeof expectedResult1 | typeof expectedResult2;
 
-    const [getSuspenseRef, , suspend] = renderHook(() =>
+    const { getSuspenseRef, suspend } = renderHook(() =>
       useSuspenseRef<RefType>(expectedResult1),
     );
 
@@ -100,7 +100,7 @@ describe("useSuspenseRef", () => {
 
     type RefType = typeof expectedResult1 | typeof expectedResult2;
 
-    const [getSuspenseRef, rerender, , forceError] = renderHook(() =>
+    const { getSuspenseRef, rerender, forceError } = renderHook(() =>
       useSuspenseRef<RefType>(expectedResult1),
     );
 
@@ -133,7 +133,36 @@ describe("useSuspenseRef", () => {
 
   // it("re-initializes the ref if the structure changes", () => {});
 
-  // it("preserves the ref when it suspends to do another component suspending", () => {});
+  it("preserves the ref when it suspends due to another component suspending", async () => {
+    const expectedResult1: unique symbol = Symbol(1);
+    const expectedResult2: unique symbol = Symbol(2);
+
+    type RefType = typeof expectedResult1 | typeof expectedResult2;
+
+    const { getSuspenseRef, suspendSibling } = renderHook(() =>
+      useSuspenseRef<RefType>(expectedResult1),
+    );
+
+    const suspenseRef1 = getSuspenseRef();
+
+    suspenseRef1.current = expectedResult2;
+
+    expect(screen.queryByTestId(loadingTestId)).toBeNull();
+
+    const unsuspend = await suspendSibling();
+
+    expect(screen.queryByTestId(loadingTestId)).not.toBeNull();
+
+    await unsuspend();
+
+    expect(suspenseRef1.current).toBe(expectedResult2);
+
+    expect(screen.queryByTestId(loadingTestId)).toBeNull();
+
+    const suspenseRef2 = getSuspenseRef();
+
+    expect(suspenseRef2.current).toBe(suspenseRef1.current);
+  });
 
   // it("can have multiple promise refs from the same component", () => {});
 });
