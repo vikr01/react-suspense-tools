@@ -40,20 +40,8 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
   return ref.current;
 }
 
-function getValue<T>(
-  structuralId: StructuralId,
-  suspenseBoundary: Fiber,
-  initValue: T,
-) {
-  if (!map.has(suspenseBoundary)) {
-    map.set(suspenseBoundary, new Map());
-  }
-
+function getValue<T>(structuralId: StructuralId, suspenseBoundary: Fiber): T {
   const boundaryMap = map.get(suspenseBoundary);
-
-  if (!boundaryMap.has(structuralId)) {
-    boundaryMap.set(structuralId, initValue);
-  }
 
   return boundaryMap.get(structuralId);
 }
@@ -83,12 +71,14 @@ function createKeyListener<T>(
     enumerable: true,
     configurable: false,
     get() {
-      return getValue(structuralId, suspenseBoundary, initValue);
+      return getValue<T>(structuralId, suspenseBoundary);
     },
     set(v) {
       setValue(structuralId, suspenseBoundary, v);
     },
   });
+
+  setValue(structuralId, suspenseBoundary, initValue);
 
   return o as React.RefObject<T>;
 }

@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
 import { createContext, use, useImperativeHandle, Suspense } from "react";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import useSuspenseRef, { clearSuspenseRefs } from "../useSuspenseRef";
 import { default as ErrorBoundary } from "./utils/RecoverableErrorBoundary";
+import "@testing-library/jest-dom";
 
 const loadingTestId = "loader1";
 const hookElementTestId = "hook-element";
@@ -76,6 +77,8 @@ describe("useSuspenseRef", () => {
 
     await unsuspend();
 
+    expect(suspenseRef1.current).toBe(expectedResult2);
+
     expect(screen.queryByTestId(loadingTestId)).toBeNull();
 
     const suspenseRef2 = getSuspenseRef();
@@ -89,27 +92,38 @@ describe("useSuspenseRef", () => {
     expect(suspenseRef2.current).toBe(suspenseRef1.current);
   });
 
-  // it("destroys the ref if the component is destroyed via error", async () => {
-  //   const expectedResult1: unique symbol = Symbol(1);
+  it("re-initializes the ref if the component is destroyed via error", async () => {
+    const expectedResult1: unique symbol = Symbol(5);
+    const expectedResult2: unique symbol = Symbol(10);
 
-  //   type RefType = typeof expectedResult1;
+    type RefType = typeof expectedResult1 | typeof expectedResult2;
 
-  //   const [getSuspenseRef, , , forceError] = renderHook(() =>
-  //     useSuspenseRef<RefType>(expectedResult1),
-  //   );
+    const [getSuspenseRef, rerender, , forceError] = renderHook(() =>
+      useSuspenseRef<RefType>(expectedResult1),
+    );
 
-  //   const suspenseRef = getSuspenseRef();
+    const suspenseRef = getSuspenseRef();
 
-  //   const resetError = await forceError();
+    suspenseRef.current = expectedResult2;
 
-  //   expect(screen.queryByTestId(hookElementTestId)).toBeNull();
+    expect(screen.queryByTestId(hookElementTestId)).not.toBeNull();
 
-  //   // expect(() => suspenseRef.current).toThrow();
+    const resetError = await forceError();
 
-  //   console.log("received", suspenseRef.current);
+    // The suspense ref should stay as expectedResult2 until the element is re-initialized
+    expect(suspenseRef.current).toBe(expectedResult2);
+    expect(screen.queryByTestId(hookElementTestId)).toBeNull();
 
-  //   expect(screen.queryByTestId(errorBoundaryFallbackTestId)).not.toBeNull();
-  // });
+    expect(screen.queryByTestId(errorBoundaryFallbackTestId)).not.toBeNull();
+
+    await resetError();
+
+    expect(screen.queryByTestId(errorBoundaryFallbackTestId)).toBeNull();
+    expect(screen.queryByTestId(hookElementTestId)).not.toBeNull();
+
+    // Since we passed expectedResult1 into the hook as the initializer, upon recreation after error it will be this again
+    expect(suspenseRef.current).toBe(expectedResult1);
+  });
 
   // it("destroys the ref if the structure changes", () => {});
 
@@ -128,16 +142,18 @@ function SuspenseComponentTree({
   >["resetErrorRef"];
 }) {
   return (
-    <Suspense fallback={<div data-testid="unused-loader" />}>
-      <Suspense fallback={<div data-testid={loadingTestId} />}>
-        <ErrorBoundary
-          fallback={<div data-test-id={errorBoundaryFallbackTestId} />}
-          resetErrorRef={resetErrorRef}
-        >
-          {children}
-        </ErrorBoundary>
+    <div data-testid="root-div">
+      <Suspense fallback={<div data-testid="unused-loader" />}>
+        <Suspense fallback={<div data-testid={loadingTestId} />}>
+          <ErrorBoundary
+            fallback={<div data-testid={errorBoundaryFallbackTestId} />}
+            resetErrorRef={resetErrorRef}
+          >
+            {children}
+          </ErrorBoundary>
+        </Suspense>
       </Suspense>
-    </Suspense>
+    </div>
   );
 }
 
@@ -251,8 +267,14 @@ function renderHook<T>(
       return () => act(() => unsuspend().then(rerender));
     });
 
+  function handleTopLevelError(event: Event) {
+    event.preventDefault();
+  }
+
   const forceError = async () => {
+    window.addEventListener("error", handleTopLevelError); // silencing the forced error
     await act<void>(() => forceErrorRef.current?.());
+    window.removeEventListener("error", handleTopLevelError);
 
     const resetError = () =>
       act<void>(() => {
