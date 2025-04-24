@@ -1,0 +1,5 @@
+{
+    "loadingTestId": "loader1",
+    "hookElementTestId": "hook-element",
+    "errorBoundaryFallbackTestId": "error-boundary-fallback"
+}
