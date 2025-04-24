@@ -9,12 +9,16 @@ const SENTINEL1 = {};
 
 export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
   const suspenseBoundaryRef = useRef<typeof SENTINEL1 | Fiber>(SENTINEL1);
-  const ref = useRef<null | React.RefObject<T>>(null);
-
   const [structuralId, suspenseBoundary] = useStructuralId((node: Fiber) => {
     const res = node.elementType === React.Suspense;
     return res;
   }, []);
+
+  const ref = useRef<{
+    obj: React.RefObject<T>;
+    structuralId: typeof structuralId;
+    suspenseBoundary: typeof suspenseBoundary;
+  }>(null);
 
   const prevStructuralId = usePrevious(structuralId);
 
@@ -27,8 +31,18 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
     suspenseBoundaryRef.current = suspenseBoundary;
   }
 
-  if (ref.current == null) {
-    ref.current = createKeyListener(structuralId, suspenseBoundary, initValue);
+  if (
+    ref.current == null ||
+    ref.current.structuralId !== structuralId ||
+    ref.current.suspenseBoundary !== suspenseBoundary
+  ) {
+    const val = ref.current == null ? initValue : ref.current.obj.current;
+
+    ref.current = {
+      obj: createKeyListener(structuralId, suspenseBoundary, val),
+      structuralId,
+      suspenseBoundary,
+    };
   }
 
   useEffect(() => {
@@ -45,7 +59,7 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
     }
   }, [structuralId, suspenseBoundary]);
 
-  return ref.current;
+  return ref.current.obj;
 }
 
 function getValue<T>(structuralId: StructuralId, suspenseBoundary: Fiber): T {

@@ -11,7 +11,8 @@ jest.mock("use-structural-id", () => {
   };
 });
 
-import { cleanup, screen } from "@testing-library/react";
+import { act, cleanup, screen } from "@testing-library/react";
+import { useState } from "react";
 import useSuspenseRef, { clearSuspenseRefs } from "../useSuspenseRef";
 import renderHook from "./utils/renderHook";
 import "@testing-library/jest-dom";
@@ -243,5 +244,41 @@ describe("useSuspenseRef", () => {
     // You NEED to get the suspense ref again, as this is now a brand new element due to key forcing a REMOUNT
     const suspenseRef3 = getSuspenseRef();
     expect(suspenseRef3.current).toBe(expectedResult1);
+  });
+
+  it("will wipe the value if the structural id changes", async () => {
+    let setStructuralId: null | ((strucId: string) => void) = null;
+
+    useStructuralId.mockImplementation(() => {
+      const [structuralId, _setStructuralId] = useState<string>(
+        "default structural id",
+      );
+      setStructuralId = _setStructuralId;
+      return [structuralId, {}] as ReturnType<typeof uncastedUseStructuralId>;
+    });
+
+    const expectedResult1: unique symbol = Symbol("bazfoo");
+    const expectedResult2: unique symbol = Symbol("nonono");
+
+    type RefType = typeof expectedResult1 | typeof expectedResult2;
+
+    const { getSuspenseRef } = renderHook(() =>
+      useSuspenseRef<RefType>(expectedResult1),
+    );
+
+    const suspenseRef = getSuspenseRef();
+
+    expect(suspenseRef.current).toBe(expectedResult1);
+
+    suspenseRef.current = expectedResult2;
+
+    await act<void>(() => {
+      setStructuralId?.("next fake structural id");
+    });
+
+    // it's destroyed because the structural id changed
+    expect(suspenseRef.current).toBeUndefined();
+
+    expect(getSuspenseRef().current).toBe(expectedResult2);
   });
 });
