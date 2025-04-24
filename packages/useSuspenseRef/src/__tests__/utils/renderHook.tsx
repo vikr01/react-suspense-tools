@@ -11,7 +11,8 @@ const fakeContext = createContext<void>(undefined);
 const SENTINEL: unique symbol = Symbol();
 
 type RenderProps = {
-  siblingSuspender: Promise<void> | typeof fakeContext;
+  suspender?: Promise<void> | typeof fakeContext;
+  siblingSuspender?: Promise<void> | typeof fakeContext;
 };
 
 type RenderHookReturn<T> = {
@@ -23,9 +24,9 @@ type RenderHookReturn<T> = {
 };
 
 export default function renderHook<T>(useHook: () => T): RenderHookReturn<T> {
-  let valueForUse: Promise<void> | typeof fakeContext = fakeContext;
-
-  const useHookWithSuspender = () => {
+  const useHookWithSuspender = (
+    valueForUse: NonNullable<RenderProps["suspender"]>,
+  ) => {
     const res = useHook();
     use(valueForUse);
 
@@ -45,11 +46,14 @@ export default function renderHook<T>(useHook: () => T): RenderHookReturn<T> {
   };
 
   const makeElement = (
-    { siblingSuspender }: RenderProps = { siblingSuspender: fakeContext },
+    { suspender = fakeContext, siblingSuspender = fakeContext }: RenderProps = {
+      suspender: fakeContext,
+      siblingSuspender: fakeContext,
+    },
   ) => (
     <SuspenseComponentTree resetErrorRef={resetErrorRef}>
       <HookComponent
-        hook={useHookWithSuspender}
+        hook={() => useHookWithSuspender(suspender)}
         hookValueRef={hookValueRef}
         forceErrorRef={forceErrorRef}
       />
@@ -80,11 +84,9 @@ export default function renderHook<T>(useHook: () => T): RenderHookReturn<T> {
   const suspend = () =>
     act(() => {
       const [promise, unsuspend] = createSuspender();
-      hookValueRef.current = SENTINEL;
-      valueForUse = promise;
-
-      rerender();
-      return () => act(() => unsuspend().then(() => rerender()));
+      rerender({ suspender: promise });
+      return () =>
+        act(() => unsuspend().then(() => rerender({ suspender: promise })));
     });
 
   function handleTopLevelError(event: Event) {
