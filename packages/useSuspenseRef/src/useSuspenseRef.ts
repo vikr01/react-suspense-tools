@@ -5,10 +5,8 @@ import useStructuralId, { type StructuralId } from "use-structural-id";
 import usePrevious from "react-use/lib/usePrevious";
 
 let map = new WeakMap();
-const SENTINEL1 = {};
 
 export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
-  const suspenseBoundaryRef = useRef<typeof SENTINEL1 | Fiber>(SENTINEL1);
   const [structuralId, suspenseBoundary] = useStructuralId((node: Fiber) => {
     const res = node.elementType === React.Suspense;
     return res;
@@ -24,11 +22,8 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
 
   const prevSuspenseBoundary = usePrevious(suspenseBoundary);
 
-  if (suspenseBoundaryRef.current !== suspenseBoundary) {
-    if (suspenseBoundary == null) {
-      throw new Error("Suspense boundary not found.");
-    }
-    suspenseBoundaryRef.current = suspenseBoundary;
+  if (suspenseBoundary == null) {
+    throw new Error("Suspense boundary not found.");
   }
 
   if (
