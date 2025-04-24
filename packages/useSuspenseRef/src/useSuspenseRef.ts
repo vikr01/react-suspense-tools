@@ -2,6 +2,7 @@ import * as React from "react";
 import { useEffect, useRef } from "react";
 import type { Fiber } from "its-fine";
 import useStructuralId, { type StructuralId } from "use-structural-id";
+import usePrevious from "react-use/lib/usePrevious";
 
 let map = new WeakMap();
 const SENTINEL1 = {};
@@ -15,15 +16,9 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
     return res;
   }, []);
 
-  const prevStructuralId = useRef<typeof structuralId>(structuralId);
+  const prevStructuralId = usePrevious(structuralId);
 
-  const prevSuspenseBoundary =
-    useRef<typeof suspenseBoundary>(suspenseBoundary);
-
-  useEffect(() => {
-    prevStructuralId.current = structuralId;
-    prevSuspenseBoundary.current = suspenseBoundary;
-  });
+  const prevSuspenseBoundary = usePrevious(suspenseBoundary);
 
   if (suspenseBoundaryRef.current !== suspenseBoundary) {
     if (suspenseBoundary == null) {
@@ -36,20 +31,19 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
     ref.current = createKeyListener(structuralId, suspenseBoundary, initValue);
   }
 
-  useEffect(
-    () => () => {
-      if (
-        prevStructuralId.current !== structuralId ||
-        prevSuspenseBoundary.current !== suspenseBoundary
-      ) {
-        if (map.has(suspenseBoundary)) {
-          const boundaryMap = map.get(suspenseBoundary);
-          boundaryMap.delete(structuralId);
-        }
+  useEffect(() => {
+    if (
+      prevStructuralId != null &&
+      prevSuspenseBoundary != null &&
+      (prevStructuralId !== structuralId ||
+        prevSuspenseBoundary !== suspenseBoundary)
+    ) {
+      if (map.has(prevSuspenseBoundary)) {
+        const boundaryMap = map.get(prevSuspenseBoundary);
+        boundaryMap.delete(prevStructuralId);
       }
-    },
-    [structuralId, suspenseBoundary],
-  );
+    }
+  }, [structuralId, suspenseBoundary]);
 
   return ref.current;
 }
@@ -71,7 +65,6 @@ function setValue<T>(
 
   const boundaryMap = map.get(suspenseBoundary);
   boundaryMap.set(structuralId, value);
-  console.log("successfully set", value);
 }
 
 function createKeyListener<T>(
