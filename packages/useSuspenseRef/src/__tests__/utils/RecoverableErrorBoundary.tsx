@@ -14,7 +14,6 @@ export default class RecoverableErrorBoundary<T> extends Component<Props<T>> {
     let res = false;
     if (err != null) {
       res = true;
-      console.log("got error", err);
     }
 
     return { hasError: res };

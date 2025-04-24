@@ -93,6 +93,8 @@ describe("useSuspenseRef", () => {
   });
 
   it("re-initializes the ref if the component is destroyed via error", async () => {
+    const spy = jest.spyOn(console, "error").mockImplementation(() => {});
+
     const expectedResult1: unique symbol = Symbol(5);
     const expectedResult2: unique symbol = Symbol(10);
 
@@ -109,6 +111,10 @@ describe("useSuspenseRef", () => {
     expect(screen.queryByTestId(hookElementTestId)).not.toBeNull();
 
     const resetError = await forceError();
+
+    expect(spy).toHaveBeenCalled();
+
+    spy.mockRestore();
 
     // The suspense ref should stay as expectedResult2 until the element is re-initialized
     expect(suspenseRef.current).toBe(expectedResult2);
@@ -269,6 +275,7 @@ function renderHook<T>(
 
   function handleTopLevelError(event: Event) {
     event.preventDefault();
+    event.stopPropagation();
   }
 
   const forceError = async () => {
