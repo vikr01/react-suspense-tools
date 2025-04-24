@@ -1,8 +1,7 @@
 import * as React from "react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { Fiber } from "its-fine";
 import useStructuralId, { type StructuralId } from "use-structural-id";
-import useUnmount from "react-use/lib/useUnmount";
 
 let map = new WeakMap();
 const SENTINEL1 = {};
@@ -16,6 +15,16 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
     return res;
   }, []);
 
+  const prevStructuralId = useRef<typeof structuralId>(structuralId);
+
+  const prevSuspenseBoundary =
+    useRef<typeof suspenseBoundary>(suspenseBoundary);
+
+  useEffect(() => {
+    prevStructuralId.current = structuralId;
+    prevSuspenseBoundary.current = suspenseBoundary;
+  });
+
   if (suspenseBoundaryRef.current !== suspenseBoundary) {
     if (suspenseBoundary == null) {
       throw new Error("Suspense boundary not found.");
@@ -27,14 +36,19 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
     ref.current = createKeyListener(structuralId, suspenseBoundary, initValue);
   }
 
-  useUnmount(
+  useEffect(
     () => () => {
-      if (map.has(suspenseBoundary)) {
-        const boundaryMap = map.get(suspenseBoundary);
-        boundaryMap.delete(structuralId);
+      if (
+        prevStructuralId.current !== structuralId ||
+        prevSuspenseBoundary.current !== suspenseBoundary
+      ) {
+        if (map.has(suspenseBoundary)) {
+          const boundaryMap = map.get(suspenseBoundary);
+          boundaryMap.delete(structuralId);
+        }
       }
     },
-    // [structuralId, suspenseBoundary]
+    [structuralId, suspenseBoundary],
   );
 
   return ref.current;
