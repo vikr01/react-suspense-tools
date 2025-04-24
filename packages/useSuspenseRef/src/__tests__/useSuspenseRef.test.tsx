@@ -1,5 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { cleanup, screen } from "@testing-library/react";
+jest.mock("use-structural-id", () => {
+  const useStructuralIdOriginal =
+    jest.requireActual("use-structural-id").default;
+
+  return {
+    __esModule: true,
+    default: jest.fn((...args) => {
+      return useStructuralIdOriginal(...args);
+    }),
+  };
+});
+
+import { act, cleanup, screen } from "@testing-library/react";
 import useSuspenseRef, { clearSuspenseRefs } from "../useSuspenseRef";
 import renderHook from "./utils/renderHook";
 import "@testing-library/jest-dom";
@@ -8,11 +19,21 @@ import {
   hookElementTestId,
   errorBoundaryFallbackTestId,
 } from "./utils/testids.json";
+import uncastedUseStructuralId, { Fiber } from "use-structural-id";
+import { useState } from "react";
+// import createUseMockStructuralId from "./utils/createUseMockStructuralId";
+// import { Fiber } from "use-structural-id";
+
+const useStructuralId = uncastedUseStructuralId as unknown as jest.Mock<
+  ReturnType<typeof uncastedUseStructuralId>,
+  Parameters<typeof uncastedUseStructuralId>
+>;
 
 describe("useSuspenseRef", () => {
   afterEach(() => {
     cleanup();
     clearSuspenseRefs();
+    useStructuralId.mockClear();
   });
 
   it("can maintain an initialized value", () => {
@@ -100,7 +121,7 @@ describe("useSuspenseRef", () => {
 
     type RefType = typeof expectedResult1 | typeof expectedResult2;
 
-    const { getSuspenseRef, rerender, forceError } = renderHook(() =>
+    const { getSuspenseRef, forceError } = renderHook(() =>
       useSuspenseRef<RefType>(expectedResult1),
     );
 
@@ -225,4 +246,68 @@ describe("useSuspenseRef", () => {
     const suspenseRef3 = getSuspenseRef();
     expect(suspenseRef3.current).toBe(expectedResult1);
   });
+
+  it("will wipe the value if the structural id changes", async () => {
+    let setStructuralId: null | ((strucId: string) => void) = null;
+
+    useStructuralId.mockImplementation(() => {
+      const [structuralId, _setStructuralId] = useState<string>(
+        "default structural id",
+      );
+      setStructuralId = _setStructuralId;
+      return [structuralId, {}] as ReturnType<typeof uncastedUseStructuralId>;
+    });
+
+    const expectedResult1: unique symbol = Symbol("bazfoo");
+
+    type RefType = typeof expectedResult1;
+
+    const { getSuspenseRef } = renderHook(() =>
+      useSuspenseRef<RefType>(expectedResult1),
+    );
+
+    const suspenseRef = getSuspenseRef();
+
+    expect(suspenseRef.current).toBe(expectedResult1);
+
+    await act<void>(() => {
+      setStructuralId?.("next fake structural id");
+    });
+
+    // it's destroyed because the structural id changed
+    expect(suspenseRef.current).toBeUndefined();
+
+    expect(getSuspenseRef().current).toBe(expectedResult1);
+  });
+
+  // it("will wipe the value if the suspense boundary changes", async () => {
+  //   let setStructuralId: null | ((strucId: string) => void) = null;
+
+  //   useStructuralId.mockImplementation(() => {
+  //     const [structuralId, _setStructuralId] = useState<string>(
+  //       "default structural id",
+  //     );
+  //     setStructuralId = _setStructuralId;
+  //     return [structuralId, {}] as ReturnType<typeof uncastedUseStructuralId>;
+  //   });
+
+  //   const expectedResult1: unique symbol = Symbol("bazfoo");
+
+  //   type RefType = typeof expectedResult1;
+
+  //   const { getSuspenseRef } = renderHook(() =>
+  //     useSuspenseRef<RefType>(expectedResult1),
+  //   );
+
+  //   const suspenseRef = getSuspenseRef();
+
+  //   expect(suspenseRef.current).toBe(expectedResult1);
+
+  //   await act<void>(() => {
+  //     setStructuralId?.("next fake structural id");
+  //   });
+
+  //   // it's destroyed because the structural id changed
+  //   expect(suspenseRef.current).toBeUndefined();
+  // });
 });
