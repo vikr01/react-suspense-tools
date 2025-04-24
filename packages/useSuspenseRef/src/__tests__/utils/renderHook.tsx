@@ -21,9 +21,14 @@ type RenderHookReturn<T> = {
   suspend: Suspend;
   suspendSibling: Suspend;
   forceError: ForceError;
+  modifyHookComponentKey: () => void;
+  modifyTreeKey: () => void;
 };
 
 export default function renderHook<T>(useHook: () => T): RenderHookReturn<T> {
+  let treeKey = 0;
+  let hookComponentKey = 0;
+
   const useHookWithSuspender = (
     valueForUse: NonNullable<RenderProps["suspender"]>,
   ) => {
@@ -51,11 +56,12 @@ export default function renderHook<T>(useHook: () => T): RenderHookReturn<T> {
       siblingSuspender: fakeContext,
     },
   ) => (
-    <SuspenseComponentTree resetErrorRef={resetErrorRef}>
+    <SuspenseComponentTree resetErrorRef={resetErrorRef} key={treeKey}>
       <HookComponent
         hook={() => useHookWithSuspender(suspender)}
         hookValueRef={hookValueRef}
         forceErrorRef={forceErrorRef}
+        key={hookComponentKey}
       />
       <SiblingComponent suspender={siblingSuspender} />
     </SuspenseComponentTree>
@@ -119,7 +125,25 @@ export default function renderHook<T>(useHook: () => T): RenderHookReturn<T> {
         );
     });
 
-  return { getSuspenseRef, rerender, suspend, forceError, suspendSibling };
+  const modifyTreeKey = () => {
+    treeKey++;
+    rerender();
+  };
+
+  const modifyHookComponentKey = () => {
+    hookComponentKey++;
+    rerender();
+  };
+
+  return {
+    getSuspenseRef,
+    rerender,
+    suspend,
+    forceError,
+    suspendSibling,
+    modifyTreeKey,
+    modifyHookComponentKey,
+  };
 }
 
 function SiblingComponent({

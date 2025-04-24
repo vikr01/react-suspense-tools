@@ -194,5 +194,35 @@ describe("useSuspenseRef", () => {
     expect(suspenseRef2.current).toBe(expectedResult4);
   });
 
-  // it("re-initializes the ref if the structure changes", () => {});
+  it("does not carry a value across remounts", async () => {
+    const expectedResult1: unique symbol = Symbol("bazfoo");
+    const expectedResult2: unique symbol = Symbol("foobaz");
+
+    type RefType = typeof expectedResult1 | typeof expectedResult2;
+
+    const { getSuspenseRef, modifyHookComponentKey, modifyTreeKey } =
+      renderHook(() => useSuspenseRef<RefType>(expectedResult1));
+
+    const suspenseRef1 = getSuspenseRef();
+
+    suspenseRef1.current = expectedResult2;
+    expect(suspenseRef1.current).toBe(expectedResult2);
+
+    modifyHookComponentKey();
+    // old element was unmounted, but its ref should stay the same
+    expect(suspenseRef1.current).toBe(expectedResult2);
+
+    // You NEED to get the suspense ref again, as this is now a brand new element due to key forcing a REMOUNT
+    const suspenseRef2 = getSuspenseRef();
+    expect(suspenseRef2.current).toBe(expectedResult1);
+
+    suspenseRef2.current = expectedResult2;
+    expect(suspenseRef2.current).toBe(expectedResult2);
+
+    modifyTreeKey();
+
+    // You NEED to get the suspense ref again, as this is now a brand new element due to key forcing a REMOUNT
+    const suspenseRef3 = getSuspenseRef();
+    expect(suspenseRef3.current).toBe(expectedResult1);
+  });
 });
