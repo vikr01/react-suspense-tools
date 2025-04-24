@@ -1,4 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+jest.mock("use-structural-id", () => {
+  const useStructuralIdOriginal =
+    jest.requireActual("use-structural-id").default;
+
+  return {
+    __esModule: true,
+    ...useStructuralIdOriginal,
+    default: jest.fn((...args) => {
+      return useStructuralIdOriginal(...args);
+    }),
+  };
+});
+
 import { cleanup, screen } from "@testing-library/react";
 import useSuspenseRef, { clearSuspenseRefs } from "../useSuspenseRef";
 import renderHook from "./utils/renderHook";
@@ -8,11 +20,18 @@ import {
   hookElementTestId,
   errorBoundaryFallbackTestId,
 } from "./utils/testids.json";
+import uncastedUseStructuralId from "use-structural-id";
+
+const useStructuralId = uncastedUseStructuralId as unknown as jest.Mock<
+  ReturnType<typeof uncastedUseStructuralId>,
+  Parameters<typeof uncastedUseStructuralId>
+>;
 
 describe("useSuspenseRef", () => {
   afterEach(() => {
     cleanup();
     clearSuspenseRefs();
+    useStructuralId.mockClear();
   });
 
   it("can maintain an initialized value", () => {
@@ -100,7 +119,7 @@ describe("useSuspenseRef", () => {
 
     type RefType = typeof expectedResult1 | typeof expectedResult2;
 
-    const { getSuspenseRef, rerender, forceError } = renderHook(() =>
+    const { getSuspenseRef, forceError } = renderHook(() =>
       useSuspenseRef<RefType>(expectedResult1),
     );
 
