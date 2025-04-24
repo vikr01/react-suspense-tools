@@ -131,8 +131,6 @@ describe("useSuspenseRef", () => {
     expect(suspenseRef.current).toBe(expectedResult1);
   });
 
-  // it("re-initializes the ref if the structure changes", () => {});
-
   it("preserves the ref when it suspends due to another component suspending", async () => {
     const expectedResult1: unique symbol = Symbol(1);
     const expectedResult2: unique symbol = Symbol(2);
@@ -164,5 +162,37 @@ describe("useSuspenseRef", () => {
     expect(suspenseRef2.current).toBe(suspenseRef1.current);
   });
 
-  // it("can have multiple promise refs from the same component", () => {});
+  it("can have multiple promise refs from the same component", async () => {
+    const expectedResult1: unique symbol = Symbol(164);
+    const expectedResult2: unique symbol = Symbol("abca");
+    const expectedResult3: unique symbol = Symbol("foobarbazfoo");
+    const expectedResult4: unique symbol = Symbol(Math.random() * 100);
+
+    type RefType1 = typeof expectedResult1 | typeof expectedResult2;
+    type RefType2 = typeof expectedResult3 | typeof expectedResult4;
+
+    const { getSuspenseRef, rerender, suspend } = renderHook(() => [
+      useSuspenseRef<RefType1>(expectedResult1),
+      useSuspenseRef<RefType2>(expectedResult3),
+    ]);
+
+    const [suspenseRef1, suspenseRef2] = getSuspenseRef();
+
+    expect(suspenseRef1.current).toBe(expectedResult1);
+    expect(suspenseRef2.current).toBe(expectedResult3);
+
+    suspenseRef1.current = expectedResult2;
+    suspenseRef2.current = expectedResult4;
+
+    const unsuspend = await suspend();
+
+    rerender();
+
+    await unsuspend();
+
+    expect(suspenseRef1.current).toBe(expectedResult2);
+    expect(suspenseRef2.current).toBe(expectedResult4);
+  });
+
+  // it("re-initializes the ref if the structure changes", () => {});
 });
