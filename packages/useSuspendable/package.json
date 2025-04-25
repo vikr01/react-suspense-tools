@@ -6,7 +6,7 @@
   "author": {
     "name": "Vik R",
     "email": "vik120@icloud.com",
-    "url": "http://linkedin.com/in/vikr01/"
+    "url": "http://github.com/vikr01/"
   },
   "scripts": {
     "build": "tsup"
