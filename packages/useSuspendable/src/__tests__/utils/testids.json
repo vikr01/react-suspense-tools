@@ -1,0 +1,4 @@
+{
+    "suspenseFallback": "suspense-fallback",
+    "testElement": "test-element"
+}
