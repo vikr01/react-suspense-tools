@@ -7,10 +7,13 @@ import usePrevious from "react-use/lib/usePrevious";
 let map = new WeakMap();
 
 export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
-  const [structuralId, suspenseBoundary] = useStructuralId((node: Fiber) => {
-    const res = node.elementType === React.Suspense;
-    return res;
-  }, []);
+  const [structuralId, suspenseBoundary] = useStructuralId(
+    (node: null | Fiber) => {
+      const res = node?.child?.elementType === React.Suspense;
+      return res;
+    },
+    [],
+  );
 
   const ref = useRef<{
     obj: React.RefObject<T>;
