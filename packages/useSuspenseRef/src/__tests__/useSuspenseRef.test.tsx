@@ -259,8 +259,12 @@ describe("useSuspenseRef", () => {
 
     const expectedResult1: unique symbol = Symbol("bazfoo");
     const expectedResult2: unique symbol = Symbol("nonono");
+    const expectedResult3: unique symbol = Symbol("12512");
 
-    type RefType = typeof expectedResult1 | typeof expectedResult2;
+    type RefType =
+      | typeof expectedResult1
+      | typeof expectedResult2
+      | typeof expectedResult3;
 
     const { getSuspenseRef } = renderHook(() =>
       useSuspenseRef<RefType>(expectedResult1),
@@ -276,10 +280,18 @@ describe("useSuspenseRef", () => {
       setStructuralId?.("next fake structural id");
     });
 
-    // it's destroyed because the structural id changed
-    expect(suspenseRef.current).toBeUndefined();
+    // it's destroyed, but we maintain the ref value
+    expect(suspenseRef.current).toBe(expectedResult2);
 
-    expect(getSuspenseRef().current).toBe(expectedResult2);
+    const suspenseRef2 = getSuspenseRef();
+
+    expect(suspenseRef2).not.toBe(suspenseRef);
+
+    expect(suspenseRef2.current).toBe(expectedResult2);
+
+    suspenseRef.current = expectedResult3;
+
+    expect(suspenseRef2.current).toBe(expectedResult2);
   });
 
   it("will wipe the value if the suspense boundary changes", async () => {
@@ -300,8 +312,12 @@ describe("useSuspenseRef", () => {
 
     const expectedResult1: unique symbol = Symbol("bazfoo");
     const expectedResult2: unique symbol = Symbol("nonono");
+    const expectedResult3: unique symbol = Symbol("lalala");
 
-    type RefType = typeof expectedResult1 | typeof expectedResult2;
+    type RefType =
+      | typeof expectedResult1
+      | typeof expectedResult2
+      | typeof expectedResult3;
 
     const { getSuspenseRef } = renderHook(() =>
       useSuspenseRef<RefType>(expectedResult1),
@@ -317,9 +333,17 @@ describe("useSuspenseRef", () => {
       setSuspenseBoundary?.([] as unknown as SuspenseBoundary);
     });
 
-    // it's destroyed because the structural id changed
-    expect(suspenseRef.current).toBeUndefined();
+    // it's destroyed, but we maintain the ref value
+    expect(suspenseRef.current).toBe(expectedResult2);
 
-    expect(getSuspenseRef().current).toBe(expectedResult2);
+    const suspenseRef2 = getSuspenseRef();
+
+    expect(suspenseRef2).not.toBe(suspenseRef);
+
+    expect(suspenseRef2.current).toBe(expectedResult2);
+
+    suspenseRef.current = expectedResult3;
+
+    expect(suspenseRef2.current).toBe(expectedResult2);
   });
 });
