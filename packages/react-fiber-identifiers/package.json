@@ -1,0 +1,20 @@
+{
+  "name": "react-fiber-identifiers",
+  "version": "0.0.0",
+  "exports": {
+    "./is-error-boundary": "./build/isErrorBoundary.js",
+    "./is-suspense": "./build/isSuspense.js"
+  },
+  "scripts": {
+    "build": "tsup"
+  },
+  "author": {
+    "name": "Vik R",
+    "email": "vik120@icloud.com",
+    "url": "http://github.com/vikr01/"
+  },
+  "license": "ISC",
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}
