@@ -3,6 +3,7 @@ import { useRef } from "react";
 import type { Fiber } from "its-fine";
 import useStructuralId, { type StructuralId } from "use-structural-id";
 import usePrevious from "react-use/lib/usePrevious";
+import isSuspense from "react-fiber-identifiers/is-suspense";
 
 type BoundaryMap<T> = Map<StructuralId, T>;
 
@@ -11,8 +12,7 @@ let map = new WeakMap<object, BoundaryMap<{ value: unknown }>>();
 export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
   const [structuralId, suspenseBoundary] = useStructuralId(
     (node: null | Fiber) => {
-      const res = node?.child?.elementType === React.Suspense;
-      return res;
+      return node != null && isSuspense(node);
     },
     [],
   );

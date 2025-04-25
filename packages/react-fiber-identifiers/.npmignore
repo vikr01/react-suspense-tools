@@ -1,0 +1,7 @@
+src/
+tsup.config.js
+typescript.config.json
+.gitignore
+.npmignore
+__tests__
+node_modules/
