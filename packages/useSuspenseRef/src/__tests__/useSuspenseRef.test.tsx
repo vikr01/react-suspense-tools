@@ -291,7 +291,7 @@ describe("useSuspenseRef", () => {
 
     suspenseRef.current = expectedResult3;
 
-    expect(suspenseRef2.current).toBe(expectedResult2);
+    expect(suspenseRef2.current).toBe(expectedResult3);
   });
 
   it("will wipe the value if the suspense boundary changes", async () => {
@@ -344,6 +344,6 @@ describe("useSuspenseRef", () => {
 
     suspenseRef.current = expectedResult3;
 
-    expect(suspenseRef2.current).toBe(expectedResult2);
+    expect(suspenseRef2.current).toBe(expectedResult3);
   });
 });

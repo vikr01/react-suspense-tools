@@ -110,7 +110,15 @@ function setValue<T>(
   suspenseBoundary: Fiber,
   value: T,
 ) {
-  setValueObj<T>(structuralId, suspenseBoundary, { value });
+  const boundaryMap = getOrCreateBoundaryMap<T>(
+    suspenseBoundary,
+  ) as BoundaryMap<T>;
+
+  if (boundaryMap.has(structuralId)) {
+    (boundaryMap.get(structuralId) as { value: T }).value = value;
+  } else {
+    setValueObj(structuralId, suspenseBoundary, { value });
+  }
 }
 
 function createKeyListener<T>(
