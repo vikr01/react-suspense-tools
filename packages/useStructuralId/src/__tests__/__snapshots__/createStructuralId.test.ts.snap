@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`createStructuralId genereates a string from elements with various element types 1`] = `"000000:n[0],000001:n[0],000002:n[0],000003:n[0],Unknown:n[0],000004:n[0],a:n[0],Unknown:n[0]"`;
-
-exports[`createStructuralId makes readable ids when the flag is on 1`] = `"Unknown:n[503],Fallback:s[baz],Fallback:n[11555],Component0:s[null]"`;

@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useStructuralId should find the right fiber node 1`] = `"0\\TestComponent:n[0],Component5:n[0],Component4:n[0],Component3:n[0]"`;
+
+exports[`useStructuralId should return a structural id 1`] = `"0\\TestComponent:n[0],Component5:n[0],Component4:n[0],Component3:n[0],Component2:n[0],Component1:n[0],Unknown:n[0]"`;
