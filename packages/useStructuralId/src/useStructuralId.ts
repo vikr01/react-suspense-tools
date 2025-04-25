@@ -1,21 +1,17 @@
 import * as React from "react";
-import { traverseFiber, type Fiber } from "its-fine";
 import { useMemo } from "react";
+import { type Fiber } from "react-reconciler";
 import createUseHookCallIndex from "create-use-hook-call-index";
-import { createArrayIdWithNumber } from "./createStructuralId";
-import type { Writable } from "type-fest";
+import createStructuralId, { type Selector } from "./createStructuralId";
+
+export type * from "./createStructuralId";
 
 const useHookCallIndex = createUseHookCallIndex();
-
-export type { Fiber };
-export type Selector = null | Parameters<typeof traverseFiber>[2];
-export type StructuralId = string;
-export type StopNode = Fiber | null;
 
 export default function useStructuralId(
   selector: Selector,
   dependencies: ReadonlyArray<unknown>,
-): [StructuralId, StopNode] {
+): ReturnType<typeof createStructuralId> {
   const hookCallIndex = useHookCallIndex();
 
   const fiber: Fiber | null =
@@ -27,22 +23,8 @@ export default function useStructuralId(
     throw new Error("Couldn't find an element currently being rendered");
   }
 
-  return useMemo(() => {
-    const structuralNodes: Writable<
-      Parameters<typeof createArrayIdWithNumber>[1]
-    > = [];
-
-    const stopNode =
-      traverseFiber(fiber, true, function (node, ...args) {
-        structuralNodes.push([node.elementType, node.key ?? node.index]);
-        return selector?.(node, ...args);
-      }) ?? null;
-
-    const structuralId = createArrayIdWithNumber(
-      hookCallIndex,
-      structuralNodes,
-    );
-
-    return [structuralId, stopNode];
-  }, dependencies);
+  return useMemo(
+    () => createStructuralId(hookCallIndex, fiber, selector),
+    dependencies,
+  );
 }

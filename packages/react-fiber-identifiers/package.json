@@ -2,6 +2,7 @@
   "name": "react-fiber-identifiers",
   "version": "0.0.0",
   "exports": {
+    "./get-unique-identifier": "./build/getUniqueIdentifier.js",
     "./is-error-boundary": "./build/isErrorBoundary.js",
     "./is-suspense": "./build/isSuspense.js"
   },
@@ -16,5 +17,8 @@
   "license": "ISC",
   "peerDependencies": {
     "react": "^19.0.0"
+  },
+  "dependencies": {
+    "nanoid": "^5.1.5"
   }
 }

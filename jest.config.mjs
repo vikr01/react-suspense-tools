@@ -26,5 +26,8 @@ export default {
   ],
   moduleNameMapper: {
     "nanoid/non-secure": require.resolve("mock-nanoid/non-secure"),
+    "react-fiber-identifiers/get-unique-identifier": require.resolve(
+      "./packages/react-fiber-identifiers/src/getUniqueIdentifier.ts",
+    ),
   },
 };
