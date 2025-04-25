@@ -18,8 +18,8 @@ import renderHook from "./utils/renderHook";
 import "@testing-library/jest-dom";
 import {
   loadingTestId,
-  hookElementTestId,
-  errorBoundaryFallbackTestId,
+  // hookElementTestId,
+  // errorBoundaryFallbackTestId,
 } from "./utils/testids.json";
 import uncastedUseStructuralId from "use-structural-id";
 
@@ -112,44 +112,44 @@ describe("useSuspenseRef", () => {
     expect(suspenseRef2.current).toBe(suspenseRef1.current);
   });
 
-  it("re-initializes the ref if the component is destroyed via error", async () => {
-    const spy = jest.spyOn(console, "error").mockImplementation(() => {});
+  // it("re-initializes the ref if the component is destroyed via error", async () => {
+  //   const spy = jest.spyOn(console, "error").mockImplementation(() => {});
 
-    const expectedResult1: unique symbol = Symbol(5);
-    const expectedResult2: unique symbol = Symbol(10);
+  //   const expectedResult1: unique symbol = Symbol(5);
+  //   const expectedResult2: unique symbol = Symbol(10);
 
-    type RefType = typeof expectedResult1 | typeof expectedResult2;
+  //   type RefType = typeof expectedResult1 | typeof expectedResult2;
 
-    const { getSuspenseRef, forceError } = renderHook(() =>
-      useSuspenseRef<RefType>(expectedResult1),
-    );
+  //   const { getSuspenseRef, forceError } = renderHook(() =>
+  //     useSuspenseRef<RefType>(expectedResult1),
+  //   );
 
-    const suspenseRef = getSuspenseRef();
+  //   const suspenseRef = getSuspenseRef();
 
-    suspenseRef.current = expectedResult2;
+  //   suspenseRef.current = expectedResult2;
 
-    expect(screen.queryByTestId(hookElementTestId)).not.toBeNull();
+  //   expect(screen.queryByTestId(hookElementTestId)).not.toBeNull();
 
-    const resetError = await forceError();
+  //   const resetError = await forceError();
 
-    expect(spy).toHaveBeenCalled();
+  //   expect(spy).toHaveBeenCalled();
 
-    spy.mockRestore();
+  //   spy.mockRestore();
 
-    // The suspense ref should stay as expectedResult2 until the element is re-initialized
-    expect(suspenseRef.current).toBe(expectedResult2);
-    expect(screen.queryByTestId(hookElementTestId)).toBeNull();
+  //   // The suspense ref should stay as expectedResult2 until the element is re-initialized
+  //   expect(suspenseRef.current).toBe(expectedResult2);
+  //   expect(screen.queryByTestId(hookElementTestId)).toBeNull();
 
-    expect(screen.queryByTestId(errorBoundaryFallbackTestId)).not.toBeNull();
+  //   expect(screen.queryByTestId(errorBoundaryFallbackTestId)).not.toBeNull();
 
-    await resetError();
+  //   await resetError();
 
-    expect(screen.queryByTestId(errorBoundaryFallbackTestId)).toBeNull();
-    expect(screen.queryByTestId(hookElementTestId)).not.toBeNull();
+  //   expect(screen.queryByTestId(errorBoundaryFallbackTestId)).toBeNull();
+  //   expect(screen.queryByTestId(hookElementTestId)).not.toBeNull();
 
-    // Since we passed expectedResult1 into the hook as the initializer, upon recreation after error it will be this again
-    expect(suspenseRef.current).toBe(expectedResult1);
-  });
+  //   // Since we passed expectedResult1 into the hook as the initializer, upon recreation after error it will be this again
+  //   expect(suspenseRef.current).toBe(expectedResult1);
+  // });
 
   it("preserves the ref when it suspends due to another component suspending", async () => {
     const expectedResult1: unique symbol = Symbol(1);

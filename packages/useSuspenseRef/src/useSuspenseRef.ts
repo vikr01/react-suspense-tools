@@ -4,9 +4,13 @@ import type { Fiber } from "its-fine";
 import useStructuralId, { type StructuralId } from "use-structural-id";
 import usePrevious from "react-use/lib/usePrevious";
 
-let map = new WeakMap();
+type BoundaryMap<T> = Map<StructuralId, T>;
 
-export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
+let map = new WeakMap<object, BoundaryMap<unknown>>();
+
+export default function useSuspenseRef<T>(
+  initValue: T,
+): React.RefObject<T | undefined> {
   const [structuralId, suspenseBoundary] = useStructuralId(
     (node: null | Fiber) => {
       const res = node?.child?.elementType === React.Suspense;
@@ -48,10 +52,11 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
       prevStructuralId != null &&
       prevSuspenseBoundary != null &&
       (prevStructuralId !== structuralId ||
-        prevSuspenseBoundary !== suspenseBoundary)
+        (prevSuspenseBoundary !== suspenseBoundary &&
+          prevSuspenseBoundary.alternate !== suspenseBoundary))
     ) {
       if (map.has(prevSuspenseBoundary)) {
-        const boundaryMap = map.get(prevSuspenseBoundary);
+        const boundaryMap = map.get(prevSuspenseBoundary) as BoundaryMap<T>;
         boundaryMap.delete(prevStructuralId);
       }
     }
@@ -61,9 +66,29 @@ export default function useSuspenseRef<T>(initValue: T): React.RefObject<T> {
 }
 
 function getValue<T>(structuralId: StructuralId, suspenseBoundary: Fiber): T {
-  const boundaryMap = map.get(suspenseBoundary);
+  const boundaryMap = map.get(suspenseBoundary) as BoundaryMap<T>;
 
-  return boundaryMap.get(structuralId);
+  return boundaryMap.get(structuralId) as T;
+}
+
+// Suspense may have a .alternate fiber node that it switches between. We'll just share the boundary map for both.
+function getOrCreateBoundaryMap<T>(suspenseBoundary: Fiber): BoundaryMap<T> {
+  if (!map.has(suspenseBoundary)) {
+    const alternate = suspenseBoundary.alternate;
+    if (alternate != null && map.has(alternate)) {
+      const alternateBoundaryMap = map.get(alternate) as BoundaryMap<T>;
+      map.set(suspenseBoundary, alternateBoundaryMap);
+    } else {
+      const boundaryMap = new Map();
+      map.set(suspenseBoundary, boundaryMap);
+      if (alternate != null) {
+        map.set(alternate, boundaryMap);
+      }
+    }
+  }
+
+  // we've inserted the boundary map if it didn't exist, so just cast
+  return map.get(suspenseBoundary) as BoundaryMap<T>;
 }
 
 function setValue<T>(
@@ -71,11 +96,7 @@ function setValue<T>(
   suspenseBoundary: Fiber,
   value: T,
 ) {
-  if (!map.has(suspenseBoundary)) {
-    map.set(suspenseBoundary, new Map());
-  }
-
-  const boundaryMap = map.get(suspenseBoundary);
+  const boundaryMap = getOrCreateBoundaryMap<T>(suspenseBoundary);
   boundaryMap.set(structuralId, value);
 }
 
@@ -84,22 +105,24 @@ function createKeyListener<T>(
   suspenseBoundary: Fiber,
   initValue: T,
 ): React.RefObject<T> {
-  const o = {};
+  const boundaryMap = getOrCreateBoundaryMap(suspenseBoundary);
 
-  Object.defineProperty(o, "current", {
+  const refObj = {};
+
+  Object.defineProperty(refObj, "current", {
     enumerable: true,
     configurable: false,
-    get() {
-      return getValue<T>(structuralId, suspenseBoundary);
-    },
-    set(v) {
-      setValue(structuralId, suspenseBoundary, v);
-    },
+    get: () => getValue<T>(structuralId, suspenseBoundary),
+    set: (v) => setValue(structuralId, suspenseBoundary, v),
   });
 
-  setValue(structuralId, suspenseBoundary, initValue);
+  const castedRefObj = refObj as React.RefObject<T>;
 
-  return o as React.RefObject<T>;
+  if (!boundaryMap.has(structuralId)) {
+    castedRefObj.current = initValue;
+  }
+
+  return castedRefObj;
 }
 
 export function clearSuspenseRefs() {
