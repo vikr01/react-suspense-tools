@@ -99,43 +99,43 @@ describe("useSuspendable", () => {
     expect(resultRef.current).toBe(expectedResult1);
   });
 
-  // it("does work with old throwing style too", async () => {
-  //   const expectedResult1: unique symbol = Symbol("first result");
-  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //   const expectedResult2: unique symbol = Symbol("result 2");
-  //   type ResultTypes = typeof expectedResult1 | typeof expectedResult2;
+  it("does work with old throwing style too", async () => {
+    const expectedResult1: unique symbol = Symbol("first result");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const expectedResult2: unique symbol = Symbol("result 2");
+    type ResultTypes = typeof expectedResult1 | typeof expectedResult2;
 
-  //   const [promise, unsuspend] = createSuspender<ResultTypes>();
+    const [promise, unsuspend] = createSuspender<ResultTypes>();
 
-  //   const resultRef: React.RefObject<null | ResultTypes> = { current: null };
+    const resultRef: React.RefObject<null | ResultTypes> = { current: null };
 
-  //   // need to use act while rendering since we suspend on the first go
-  //   await act(async () =>
-  //     render(
-  //       <Component1>
-  //         <TestingComponentWithThrow
-  //           makePromise={() => promise}
-  //           promiseResultRef={resultRef}
-  //         />
-  //         <div />
-  //       </Component1>,
-  //     ),
-  //   );
+    // need to use act while rendering since we suspend on the first go
+    await act(async () =>
+      render(
+        <Component1>
+          <TestingComponentWithThrow
+            makePromise={() => promise}
+            promiseResultRef={resultRef}
+          />
+          <div />
+        </Component1>,
+      ),
+    );
 
-  //   expect(screen.queryByTestId(testids.testElement)).toBeNull();
-  //   expect(screen.queryByTestId(testids.suspenseFallback)).not.toBeNull();
+    expect(screen.queryByTestId(testids.testElement)).toBeNull();
+    expect(screen.queryByTestId(testids.suspenseFallback)).not.toBeNull();
 
-  //   await act<void>(async () => {
-  //     unsuspend(expectedResult1);
-  //     await promise;
-  //   });
+    await act<void>(async () => {
+      unsuspend(expectedResult1);
+      await promise;
+    });
 
-  //   expect(resultRef.current).toBe(expectedResult1);
+    expect(resultRef.current).toBe(expectedResult1);
 
-  //   expect(screen.queryByTestId(testids.testElement)).not.toBeNull();
+    expect(screen.queryByTestId(testids.testElement)).not.toBeNull();
 
-  //   expect(screen.queryByTestId(testids.suspenseFallback)).toBeNull();
-  // });
+    expect(screen.queryByTestId(testids.suspenseFallback)).toBeNull();
+  });
 
   // it("does constantly re-suspend if you use a memoized component for suspense", () => {});
 });
@@ -169,6 +169,15 @@ function TestingComponent<T>({
   return <TestElement />;
 }
 
+type SuspenseCompletionRef<T> =
+  | {
+      data: T;
+      errored?: false;
+      completed: true;
+    }
+  | { errored: true; completed: true }
+  | { completed: false };
+
 function TestingComponentWithThrow<T>({
   makePromise,
   promiseResultRef,
@@ -178,38 +187,45 @@ function TestingComponentWithThrow<T>({
   promiseResultRef?: React.Ref<T>;
   resetRef?: React.Ref<() => void>;
 }) {
-  const suspenseRef = uncastedUseSuspenseRef<
-    | null
-    | true
-    | {
-        data: T;
-      }
-  >(null);
+  const suspenseRef = uncastedUseSuspenseRef<null | SuspenseCompletionRef<T>>(
+    null,
+  );
+
+  if (suspenseRef.current == null) {
+    suspenseRef.current = {
+      completed: false,
+    };
+  }
+  const obj = suspenseRef.current;
 
   const { promise: madePromise, reset } = useSuspendable(() =>
     makePromise()
       .then((res) => {
-        suspenseRef.current = { data: res };
+        suspenseRef.current = {
+          data: res,
+          completed: true,
+        };
+      })
+      .catch(() => {
+        suspenseRef.current = {
+          errored: true,
+          completed: true,
+        };
       })
       .finally(() => {
-        if (suspenseRef.current == null) {
-          suspenseRef.current = true;
-        }
+        obj.completed = true;
       }),
   );
 
-  if (suspenseRef.current == null) {
-    console.log("suspending");
+  if (obj.completed !== true) {
     throw madePromise;
   }
 
-  const res = suspenseRef.current;
-  if (res === true) {
+  if (obj.errored == true) {
     throw new Error("promise failed");
   }
 
-  // const res = suspenseRef.current.data as T;
-  useImperativeHandle(promiseResultRef, () => res.data);
+  useImperativeHandle(promiseResultRef, () => obj.data);
   useImperativeHandle(resetRef, () => reset);
 
   return <TestElement />;
