@@ -1,0 +1,22 @@
+{
+  "name": "use-suspendable",
+  "version": "0.0.0",
+  "main": "build/useSuspendable.js",
+  "types": "build/useSuspenseRef.d.ts",
+  "author": {
+    "name": "Vik R",
+    "email": "vik120@icloud.com",
+    "url": "http://linkedin.com/in/vikr01/"
+  },
+  "scripts": {
+    "build": "tsup"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "use-force-update": "^1.0.11",
+    "use-suspense-ref": "^0.0.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}
