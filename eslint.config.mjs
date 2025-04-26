@@ -23,7 +23,7 @@ export default defineConfig(
       },
     },
     {
-      files: ["testing/*.js"],
+      files: ["**/testing/*.js"],
       globals: {
         ...globals.node,
       },

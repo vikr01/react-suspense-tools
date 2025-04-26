@@ -24,6 +24,6 @@
   },
   "devDependencies": {
     "@gitpkg/react-reconciler": "https://gitpkg.vercel.app/facebook/react/packages/react-reconciler?v19.0.0",
-    "@gitpkg/react-shared": "https://gitpkg.vercel.app/facebook/react/packages/shared?v19.0.0"
+    "shared": "https://gitpkg.vercel.app/facebook/react/packages/shared?v19.0.0"
   }
 }
