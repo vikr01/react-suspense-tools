@@ -1,39 +1,53 @@
-const path = require("path");
+// const path = require("path");
 
-function buildReconcilerPath(relativePath) {
-  return path.join("@gitpkg/react-reconciler/src/", relativePath);
-}
+// const reactReconcilerPath = path.dirname(require.resolve('@gitpkg/react-reconciler/package.json'));
 
-jest.mock(buildReconcilerPath("./ReactFiberConfig"), () => ({
-  supportsResources: false,
-  supportsSingletons: false,
-  isHostHoistableType: false,
-  isHostSingletonType: false,
-}));
+// function buildReconcilerPath(relativePath) {
+//   return path.join(reactReconcilerPath, "/src/", relativePath);
+// }
 
-__EXPERIMENTAL__ = false;
+// const builtpath = buildReconcilerPath("./ReactFiberConfig");
 
-// jest.mock("shared/ReactFeatureFlags", () => ({
-//   enableProfilerTimer: false,
-//   enableScopeAPI: false,
-//   enableLegacyHidden: false,
-//   enableTransitionTracing: false,
-//   enableDO_NOT_USE_disableStrictPassiveEffect: false,
-//   enableRenderableContext: false,
-//   disableLegacyMode: false,
-//   enableObjectFiber: false,
-//   enableViewTransition: false,
-//   enableSuspenseyImages: false,
-//   enableCreateEventHandleAPI: false,
-//   enableUseEffectEventHook: false,
+// console.log('builtpath', builtpath);
+
+// jest.mock(builtpath, () => ({
+//   supportsResources: 0,
+//   supportsSingletons: false,
+//   isHostHoistableType: false,
+//   isHostSingletonType: false,
 // }));
 
-// jest.mock(buildReconcilerPath('./ReactFiberFlags'), ()=>({
-//     NoFlags: false,
-//     Placement: false,
-//     StaticMask: false,
-// }));
+// jest.mock(
+//   buildReconcilerPath('./ReactFiber'), 
+//   ()=>jest.requireActual(
+//     '@gitpkg/react-reconciler/src/ReactFiber'
+//   )
+// );
 
-// jest.mock(buildReconcilerPath('./ReactRootTags'), ()=>({
-//     ConcurrentRoot: 0,
-// }));
+// __EXPERIMENTAL__ = false;
+// __PROFILE__ = false;
+
+// // jest.mock("shared/ReactFeatureFlags", () => ({
+// //   enableProfilerTimer: false,
+// //   enableScopeAPI: false,
+// //   enableLegacyHidden: false,
+// //   enableTransitionTracing: false,
+// //   enableDO_NOT_USE_disableStrictPassiveEffect: false,
+// //   enableRenderableContext: false,
+// //   disableLegacyMode: false,
+// //   enableObjectFiber: false,
+// //   enableViewTransition: false,
+// //   enableSuspenseyImages: false,
+// //   enableCreateEventHandleAPI: false,
+// //   enableUseEffectEventHook: false,
+// // }));
+
+// // jest.mock(buildReconcilerPath('./ReactFiberFlags'), ()=>({
+// //     NoFlags: false,
+// //     Placement: false,
+// //     StaticMask: false,
+// // }));
+
+// // jest.mock(buildReconcilerPath('./ReactRootTags'), ()=>({
+// //     ConcurrentRoot: 0,
+// // }));
