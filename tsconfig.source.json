@@ -28,6 +28,7 @@
   },
 
   "include": [
+    "jest.config.ts",
     "packages/*/src"
   ],
 
