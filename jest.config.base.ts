@@ -1,21 +1,18 @@
-export default {
+import type { Config } from "@jest/types";
+
+const config: Config.InitialOptions = {
   preset: "ts-jest",
   testEnvironment: "jsdom", // or 'node' if no DOM is needed
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-  transformIgnorePatterns: ["/node_modules/(?!@gitpkg/react-reconciler)/"],
   transform: {
     "^.+\\.(ts|tsx)$": [
       "ts-jest",
       {
-        tsconfig: require.resolve("./tsconfig.source.json"),
-        isolatedModules: true,
+        tsconfig: require.resolve("./tsconfig.jest.json"),
       },
     ],
 
     "^.+\\.(css|less|scss|sass)$": "jest-transform-stub",
-
-    // strip flow types out of react source code pulled directly from github
-    "@gitpkg/react-.*": require.resolve("./testing/deleteFlowTypes.babel"),
   },
   testPathIgnorePatterns: ["/node_modules/", "/build/"],
   testMatch: [
@@ -27,12 +24,14 @@ export default {
   setupFiles: [
     require.resolve("./testing/jest.setup.js"),
     require.resolve("./testing/jest.console-filter.js"),
-    require.resolve("./testing/react-github-setup.jest.js"),
   ],
   moduleNameMapper: {
     "nanoid/non-secure": require.resolve("mock-nanoid/non-secure"),
+    // due to __DEV_STRUCTURAL_ID_DEBUG__ being compiled out, but needed in testing
     "react-fiber-identifiers/get-unique-identifier": require.resolve(
       "./packages/react-fiber-identifiers/src/getUniqueIdentifier.ts",
     ),
   },
 };
+
+export default config;
