@@ -21,16 +21,7 @@
 
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    // "baseUrl": ".",
-    // "paths": {
-    //   "use-structural-id": ["packages/useStructuralId/src/useStructuralId.ts"] // 👈 This is the dev-time override
-    // }
   },
-
-  "include": [
-    "jest.config.ts",
-    "packages/*/src"
-  ],
 
   "exclude": [
     "node_modules",
