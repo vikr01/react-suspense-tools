@@ -1,11 +1,10 @@
-/* eslint-disable no-undef */
 const originalLog = console.log;
 
-console.log = (...args) => {
-  const err = {};
+console.log = (...args: Parameters<typeof console.log>) => {
+  const err = {} as Error;
   Error.captureStackTrace(err, console.log);
 
-  const stackLines = err.stack?.split("\n") || [];
+  const stackLines = err?.stack?.split("\n") || [];
 
   const callerFile = stackLines
     .map(
@@ -23,5 +22,4 @@ console.log = (...args) => {
   if (isAllowed) {
     originalLog(...args);
   }
-  // else: silence
 };
