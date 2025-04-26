@@ -4,7 +4,8 @@
   "main": "build/createUseHookCallIndex.js",
   "types": "build/createUseHookCallIndex.d.ts",
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "test": "jest"
   },
   "peerDependencies": {
     "react": "^19.0.0"

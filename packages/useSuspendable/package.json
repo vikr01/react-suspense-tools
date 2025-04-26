@@ -9,7 +9,9 @@
     "url": "http://github.com/vikr01/"
   },
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "test": "jest"
+
   },
   "license": "ISC",
   "dependencies": {
