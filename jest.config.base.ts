@@ -22,8 +22,8 @@ const config: Config.InitialOptions = {
     __DEV_STRUCTURAL_ID_DEBUG__: JSON.stringify(false),
   },
   setupFiles: [
-    require.resolve("./testing/jest.setup.js"),
-    require.resolve("./testing/jest.console-filter.js"),
+    require.resolve("./testing/jest.setup.ts"),
+    require.resolve("./testing/jest.console-filter.ts"),
   ],
   moduleNameMapper: {
     "nanoid/non-secure": require.resolve("mock-nanoid/non-secure"),
