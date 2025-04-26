@@ -1,20 +1,25 @@
 import * as React from "react";
 import type { Fiber } from "react-reconciler";
 
-export default function isErrorBoundary(fiber: Fiber): boolean {
+export default function isErrorBoundary(fiber: Fiber | null): boolean {
+  if (fiber == null) {
+    return false;
+  }
+
   const elementType = fiber.elementType;
 
   // Check if the elementType is a class-based component
-  if (
-    typeof elementType === "function" &&
-    elementType.prototype instanceof React.Component
-  ) {
-    const instance = fiber.stateNode;
+  if (elementType?.prototype instanceof React.Component) {
+    const instance = fiber.elementType;
 
-    // Check if the class component implements `componentDidCatch`
-    if (instance && typeof instance.componentDidCatch === "function") {
-      return true; // This is an error boundary
+    if (instance == null) {
+      return false;
     }
+
+    return (
+      typeof instance.prototype.componentDidCatch === "function" ||
+      typeof instance.getDerivedStateFromError === "function"
+    );
   }
 
   return false;
