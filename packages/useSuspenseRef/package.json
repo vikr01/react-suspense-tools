@@ -9,7 +9,8 @@
     "url": "http://github.com/vikr01/"
   },
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "test": "jest"
   },
   "dependencies": {
     "react-use": "^17.6.0",
