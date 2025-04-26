@@ -23,7 +23,7 @@
     "nanoid": "^5.1.5"
   },
   "devDependencies": {
-    "@gitpkg/react-reconciler": "https://gitpkg.vercel.app/facebook/react/packages/react-reconciler?v19.0.0",
-    "shared": "https://gitpkg.vercel.app/facebook/react/packages/shared?v19.0.0"
+    "react-dom": "^19.0.0",
+    "react-reconciler": "^0.32.0"
   }
 }
