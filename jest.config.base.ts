@@ -2,12 +2,20 @@ export default {
   preset: "ts-jest",
   testEnvironment: "jsdom", // or 'node' if no DOM is needed
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
+  transformIgnorePatterns: ["/node_modules/(?!@gitpkg/react-reconciler)/"],
   transform: {
     "^.+\\.(ts|tsx)$": [
       "ts-jest",
-      { tsconfig: require.resolve("./tsconfig.source.json") },
+      {
+        tsconfig: require.resolve("./tsconfig.source.json"),
+        isolatedModules: true,
+      },
     ],
+
     "^.+\\.(css|less|scss|sass)$": "jest-transform-stub",
+
+    // strip flow types out of react source code pulled directly from github
+    "@gitpkg/react-.*": require.resolve("./testing/deleteFlowTypes.babel"),
   },
   testPathIgnorePatterns: ["/node_modules/", "/build/"],
   testMatch: [
@@ -19,6 +27,7 @@ export default {
   setupFiles: [
     require.resolve("./testing/jest.setup.js"),
     require.resolve("./testing/jest.console-filter.js"),
+    require.resolve("./testing/react-github-setup.jest.js"),
   ],
   moduleNameMapper: {
     "nanoid/non-secure": require.resolve("mock-nanoid/non-secure"),

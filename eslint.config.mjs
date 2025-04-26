@@ -4,6 +4,7 @@ import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import { createRequire } from "module";
+import globals from "globals";
 
 const require = createRequire(import.meta.url);
 
@@ -19,6 +20,15 @@ export default defineConfig(
         parserOptions: {
           project: [require.resolve("./tsconfig.source.json")],
         },
+      },
+    },
+    {
+      files: ["testing/*.js"],
+      globals: {
+        ...globals.node,
+      },
+      languageOptions: {
+        sourceType: "commonjs",
       },
     },
     globalIgnores([
