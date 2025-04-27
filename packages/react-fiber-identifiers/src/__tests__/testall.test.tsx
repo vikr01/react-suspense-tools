@@ -1,4 +1,4 @@
-import createFiber from "./utils/createFiber";
+import createFiber from "../testing/createFiber";
 import * as React from "react";
 import { Suspense } from "react";
 import isSuspense from "../isSuspense";
