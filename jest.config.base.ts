@@ -1,18 +1,19 @@
 import type { Config } from "@jest/types";
+import path from "path";
 
 const config: Config.InitialOptions = {
-  preset: "ts-jest",
-  testEnvironment: "jsdom", // or 'node' if no DOM is needed
+  preset: path.join(require.resolve("ts-jest/package.json"), ".."),
+  testEnvironment: require.resolve("jest-environment-jsdom"),
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   transform: {
     "^.+\\.(ts|tsx)$": [
-      "ts-jest",
+      require.resolve("ts-jest"),
       {
         tsconfig: require.resolve("./tsconfig.jest.json"),
       },
     ],
 
-    "^.+\\.(css|less|scss|sass)$": "jest-transform-stub",
+    "^.+\\.(css|less|scss|sass)$": [require.resolve("jest-transform-stub"), {}],
   },
   testPathIgnorePatterns: ["/node_modules/", "/build/"],
   testMatch: [
