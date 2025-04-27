@@ -6,6 +6,6 @@ const useStable = buildUseStable(useSuspenseRef);
 export default function useSuspendable<T>(
   cb: () => PromiseLike<T>,
   dependencies: ReadonlyArray<unknown>,
-): PromiseLike<T> {
-  return useStable(cb, dependencies);
+): [PromiseLike<T>] {
+  return [useStable(cb, dependencies)];
 }

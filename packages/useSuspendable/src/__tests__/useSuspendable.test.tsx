@@ -141,7 +141,7 @@ function TestingComponent<T>({
   makePromise: () => Promise<T>;
   promiseResultRef?: React.Ref<T>;
 }) {
-  const madePromise = useSuspendable(makePromise, dependencies);
+  const [madePromise] = useSuspendable(makePromise, dependencies);
   const res = use(madePromise);
   useImperativeHandle(promiseResultRef, () => res);
 
@@ -175,7 +175,7 @@ function TestingComponentWithThrow<T>({
   }
   const obj = suspenseRef.current;
 
-  const madePromise = useSuspendable(
+  const [madePromise] = useSuspendable(
     () =>
       makePromise()
         .then((res) => {
