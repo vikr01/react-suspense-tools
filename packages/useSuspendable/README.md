@@ -5,11 +5,7 @@ This is a hook to create a "suspendable" -- a promise cached to the current elem
 This is useful when using it to suspend.
 
 > [!WARNING]  
-> There are pitfalls to using this.
-> 
-> Under the hood, the hook creates a `structuralId` from the current React node up to the closest Suspense node, and caches the promise based on that `structuralId` and the `dependencies` array.
->
-> This makes it harder to share data between components.
+> This was designed to solve the problem where async requests are made in effects, not other uses of async with React.
 
 
 # Migration from setting state in `useEffect`
