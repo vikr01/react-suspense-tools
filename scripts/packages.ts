@@ -1,12 +1,12 @@
-import glob from "glob";
-import path from "path";
 import { workspaces } from "../package.json";
+import {
+  convertWorkspaceGlobToProjects,
+  hasPackageJSON,
+  isJestProject,
+} from "./package-filterers";
 
-const rootPath = path.join(__dirname, "..");
+export const packages = workspaces.map(convertWorkspaceGlobToProjects).flat();
 
-const convertWorkspaceGlobToProjects = (workspacePattern: string): string[] =>
-  glob.sync(path.join(workspacePattern, "/"), { cwd: rootPath, noext: true });
+export const packagesWithPackageJson = packages.filter(hasPackageJSON);
 
-const packages = workspaces.map(convertWorkspaceGlobToProjects).flat();
-
-export { packages };
+export const jestProjects = packages.filter(isJestProject);
