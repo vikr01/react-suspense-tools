@@ -1,27 +1,10 @@
-jest.mock("use-suspense-ref", () => {
-  const useSuspenseRefOriginal = jest.requireActual("use-suspense-ref").default;
-
-  return {
-    __esModule: true,
-    ...useSuspenseRefOriginal,
-    default: jest.fn((...args) => {
-      return useSuspenseRefOriginal(...args);
-    }),
-  };
-});
-
 import * as React from "react";
 import { use, useImperativeHandle, Suspense } from "react";
 import useSuspendable from "../useSuspendable";
-import uncastedUseSuspenseRef from "use-suspense-ref";
+import useSuspenseRef from "use-suspense-ref";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import * as testids from "./utils/testids.json";
 import createSuspender from "./utils/createSuspender";
-
-const useSuspenseRef = uncastedUseSuspenseRef as unknown as jest.Mock<
-  ReturnType<typeof uncastedUseSuspenseRef>,
-  Parameters<typeof uncastedUseSuspenseRef>
->;
 
 describe("useSuspendable", () => {
   afterEach(() => {
@@ -42,6 +25,7 @@ describe("useSuspendable", () => {
       render(
         <Component1>
           <TestingComponent
+            dependencies={[]}
             makePromise={() => promise}
             promiseResultRef={resultRef}
           />
@@ -72,6 +56,7 @@ describe("useSuspendable", () => {
       rerender(
         <Component1>
           <TestingComponent
+            dependencies={[]}
             makePromise={() => promise2}
             promiseResultRef={resultRef}
           />
@@ -89,12 +74,6 @@ describe("useSuspendable", () => {
     });
 
     expect(promise2spy).toHaveBeenCalled();
-
-    const lastSuspenseRef = useSuspenseRef.mock.results[
-      useSuspenseRef.mock.results.length - 1
-    ].value as ReturnType<typeof useSuspenseRef>;
-
-    expect(lastSuspenseRef.current).toBe(promise);
 
     expect(resultRef.current).toBe(expectedResult1);
   });
@@ -116,6 +95,7 @@ describe("useSuspendable", () => {
           <TestingComponentWithThrow
             makePromise={() => promise}
             promiseResultRef={resultRef}
+            dependencies={[]}
           />
           <div />
         </Component1>,
@@ -153,18 +133,17 @@ function Component1({ children }: { children: React.ReactNode }) {
 }
 
 function TestingComponent<T>({
+  dependencies,
   makePromise,
   promiseResultRef,
-  resetRef,
 }: {
+  dependencies: Array<unknown>;
   makePromise: () => Promise<T>;
   promiseResultRef?: React.Ref<T>;
-  resetRef?: React.Ref<() => void>;
 }) {
-  const { promise: madePromise, reset } = useSuspendable(makePromise);
+  const madePromise = useSuspendable(makePromise, dependencies);
   const res = use(madePromise);
   useImperativeHandle(promiseResultRef, () => res);
-  useImperativeHandle(resetRef, () => reset);
 
   return <TestElement />;
 }
@@ -181,15 +160,13 @@ type SuspenseCompletionRef<T> =
 function TestingComponentWithThrow<T>({
   makePromise,
   promiseResultRef,
-  resetRef,
+  dependencies,
 }: {
   makePromise: () => Promise<T>;
   promiseResultRef?: React.Ref<T>;
-  resetRef?: React.Ref<() => void>;
+  dependencies: Array<unknown>;
 }) {
-  const suspenseRef = uncastedUseSuspenseRef<null | SuspenseCompletionRef<T>>(
-    null,
-  );
+  const suspenseRef = useSuspenseRef<null | SuspenseCompletionRef<T>>(null);
 
   if (suspenseRef.current == null) {
     suspenseRef.current = {
@@ -198,23 +175,25 @@ function TestingComponentWithThrow<T>({
   }
   const obj = suspenseRef.current;
 
-  const { promise: madePromise, reset } = useSuspendable(() =>
-    makePromise()
-      .then((res) => {
-        suspenseRef.current = {
-          data: res,
-          completed: true,
-        };
-      })
-      .catch(() => {
-        suspenseRef.current = {
-          errored: true,
-          completed: true,
-        };
-      })
-      .finally(() => {
-        obj.completed = true;
-      }),
+  const madePromise = useSuspendable(
+    () =>
+      makePromise()
+        .then((res) => {
+          suspenseRef.current = {
+            data: res,
+            completed: true,
+          };
+        })
+        .catch(() => {
+          suspenseRef.current = {
+            errored: true,
+            completed: true,
+          };
+        })
+        .finally(() => {
+          obj.completed = true;
+        }),
+    dependencies,
   );
 
   if (obj.completed !== true) {
@@ -226,7 +205,6 @@ function TestingComponentWithThrow<T>({
   }
 
   useImperativeHandle(promiseResultRef, () => obj.data);
-  useImperativeHandle(resetRef, () => reset);
 
   return <TestElement />;
 }
