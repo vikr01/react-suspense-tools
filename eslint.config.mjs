@@ -3,10 +3,13 @@ import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
 import { createRequire } from "module";
 import globals from "globals";
-
 const require = createRequire(import.meta.url);
+
+const tsConfigPath = require.resolve("./tsconfig.source.json");
 
 export default defineConfig(
   tseslint.config(
@@ -18,7 +21,7 @@ export default defineConfig(
       files: ["*.ts", "*.tsx", "*.js", "*.jsx"],
       languageOptions: {
         parserOptions: {
-          project: [require.resolve("./tsconfig.source.json")],
+          project: [tsConfigPath],
         },
       },
     },
@@ -29,6 +32,26 @@ export default defineConfig(
       },
       languageOptions: {
         sourceType: "commonjs",
+      },
+    },
+    {
+      files: ["packages/react-suspense-examples-vite/**/*.{ts,tsx,js,jsx}"],
+      languageOptions: {
+        ecmaVersion: 2020,
+        globals: {
+          ...globals.browser,
+        },
+      },
+      plugins: {
+        "react-hooks": reactHooks,
+        "react-refresh": reactRefresh,
+      },
+      rules: {
+        ...reactHooks.configs.recommended.rules,
+        "react-refresh/only-export-components": [
+          "warn",
+          { allowConstantExport: true },
+        ],
       },
     },
     globalIgnores([
