@@ -3,9 +3,9 @@ import buildUseStable from "react-use-stable/builder";
 
 const useStable = buildUseStable(useSuspenseRef);
 
-export default function useSuspendable<T>(
-  cb: () => PromiseLike<T>,
+export default function useSuspendable<T, Y extends Promise<T> = Promise<T>>(
+  cb: () => Y,
   dependencies: ReadonlyArray<unknown>,
-): [PromiseLike<T>] {
+): [Y] {
   return [useStable(cb, dependencies)];
 }
