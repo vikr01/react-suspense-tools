@@ -1,3 +1,4 @@
+process.env.TS_NODE_PROJECT = "tsconfig.source.json";
 import { defineConfig, globalIgnores } from "eslint/config";
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
@@ -6,9 +7,14 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import { createRequire } from "module";
+import { fileURLToPath } from "url";
+import { dirname, relative } from "path";
 import globals from "globals";
 const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
+const eslintConfigFilePath = relative(__dirname, __filename);
 const tsConfigPath = require.resolve("./tsconfig.source.json");
 
 export default defineConfig(
@@ -52,6 +58,14 @@ export default defineConfig(
           "warn",
           { allowConstantExport: true },
         ],
+      },
+    },
+    {
+      files: [eslintConfigFilePath],
+      languageOptions: {
+        globals: {
+          ...globals.node,
+        },
       },
     },
     globalIgnores([
