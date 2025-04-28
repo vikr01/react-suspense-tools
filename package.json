@@ -15,7 +15,7 @@
     "lint": "npm run lint-specific .",
     "lint-fix": "eslint . --fix",
     "lint-specific": "eslint",
-    "start": "npm run start --workspace=react-suspense-examples",
+    "start": "npm run dev --workspace=react-suspense-examples-vite",
     "test": "TS_NODE_PROJECT=tsconfig.source.json jest",
     "typecheck": "tsc -p tsconfig.source.json",
     "script": "npm-run"
@@ -33,6 +33,7 @@
     "@tsconfig/recommended": "^1.0.8",
     "@types/glob": "^8.1.0",
     "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.2",
     "@types/react-test-renderer": "^19.1.0",
     "@types/seedrandom": "^3.0.8",
     "babel-jest": "^29.7.0",
