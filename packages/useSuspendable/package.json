@@ -2,6 +2,11 @@
   "name": "use-suspendable",
   "version": "0.0.0",
   "main": "build/useSuspendable.js",
+  "exports": {
+    ".": "./build/useSuspendable.js",
+    "./wrap-promise": "./build/wrapPromise.js",
+    "./map-promise": "./build/mapPromise.js"
+  },
   "types": "build/useSuspenseRef.d.ts",
   "author": {
     "name": "Vik R",
