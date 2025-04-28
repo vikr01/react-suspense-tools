@@ -1,4 +1,0 @@
-// just for react-scripts
-{
-    "extends": "../../tsconfig.source.json",
-}
