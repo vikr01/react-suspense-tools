@@ -14,8 +14,8 @@
     "react-dom": "19.0.0",
     "react-json-view-lite": "^2.4.1",
     "react-use": "^17.6.0",
-    "seedrandom": "^3.0.5",
     "react-use-suspendable": "^0.2.0",
+    "seedrandom": "^3.0.5",
     "use-suspense-ref": "^0.2.0"
   },
   "devDependencies": {
