@@ -1,5 +1,6 @@
 {
   "name": "react-suspense-examples-vite",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "vite",
