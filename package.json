@@ -1,7 +1,7 @@
 {
   "name": "react-suspense-tools",
-  "private": true,
   "version": "0.1.0",
+  "private": true,
   "workspaces": [
     "packages/*"
   ],
@@ -15,6 +15,7 @@
     "lint": "npm run lint-specific .",
     "lint-fix": "eslint . --fix",
     "lint-specific": "eslint",
+    "prepublish": "npm run build",
     "start": "npm run dev --workspace=react-suspense-examples-vite",
     "test": "TS_NODE_PROJECT=tsconfig.source.json jest",
     "typecheck": "tsc -p tsconfig.source.json",
