@@ -1,6 +1,6 @@
 {
   "name": "use-structural-id",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "build/useStructuralId.js",
   "types": "build/useStructuralId.d.ts",
   "author": {
@@ -18,5 +18,13 @@
   },
   "peerDependencies": {
     "react": "^19.0.0"
-  }
+  },
+  "license": "MIT",
+  "gitHead": "c9106d263dd72c545fc33a6e2724250554cf26da",
+  "keywords": [
+    "react",
+    "typescript",
+    "suspense",
+    "hook"
+  ]
 }

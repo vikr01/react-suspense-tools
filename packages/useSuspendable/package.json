@@ -1,6 +1,6 @@
 {
-  "name": "use-suspendable",
-  "version": "0.1.0",
+  "name": "react-use-suspendable",
+  "version": "0.2.0",
   "main": "build/useSuspendable.js",
   "exports": {
     ".": "./build/useSuspendable.js",
@@ -17,12 +17,19 @@
     "build": "tsup",
     "test": "jest"
   },
-  "license": "ISC",
   "dependencies": {
     "react-use-stable": "^0.2.1",
-    "use-suspense-ref": "^0.1.0"
+    "use-suspense-ref": "^0.2.0"
   },
   "peerDependencies": {
     "react": "^19.0.0"
-  }
+  },
+  "license": "MIT",
+  "gitHead": "c9106d263dd72c545fc33a6e2724250554cf26da",
+  "keywords": [
+    "react",
+    "typescript",
+    "suspense",
+    "hook"
+  ]
 }

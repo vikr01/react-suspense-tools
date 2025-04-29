@@ -1,6 +1,6 @@
 {
   "name": "create-use-hook-call-index",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "build/createUseHookCallIndex.js",
   "types": "build/createUseHookCallIndex.d.ts",
   "scripts": {
@@ -15,9 +15,15 @@
     "email": "vik120@icloud.com",
     "url": "http://github.com/vikr01/"
   },
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "its-fine": "^2.0.0"
-  }
+  },
+  "license": "MIT",
+  "gitHead": "c9106d263dd72c545fc33a6e2724250554cf26da",
+  "keywords": [
+    "react",
+    "typescript",
+    "suspense",
+    "hook"
+  ]
 }
