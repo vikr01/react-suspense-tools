@@ -92,7 +92,7 @@ import wrapPromise, {
 
 function MyComponent({param, ...passThroughProps}) {
     const [promise] = useSuspendable(
-        ()=>expensiveAsyncFunction(param),
+        ()=>wrapPromise(expensiveAsyncFunction(param)),
         [param]
     );
 
@@ -125,7 +125,7 @@ function MyComponentContainer(props) {
 }
 ```
 
-`use-suspendable/wrap-promise` or `use-suspendable/map-promise` have the same API, but work different internally -- `wrap-promise` will modify your promise to store its state while `map-promise` will store the promise in a `WeakMap` at the module-level.
+`use-suspendable/wrap-promise` and `use-suspendable/map-promise` have the same API, but work different internally -- `wrap-promise` will *modify* the promise to store its state while `map-promise` will *store* the promise in a `WeakMap` at the module-level.
 
 
 ## What's the difference?
