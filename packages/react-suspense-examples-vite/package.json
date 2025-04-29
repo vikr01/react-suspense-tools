@@ -1,6 +1,6 @@
 {
   "name": "react-suspense-examples-vite",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -15,8 +15,8 @@
     "react-json-view-lite": "^2.4.1",
     "react-use": "^17.6.0",
     "seedrandom": "^3.0.5",
-    "use-suspendable": "*",
-    "use-suspense-ref": "*"
+    "use-suspendable": "^0.1.0",
+    "use-suspense-ref": "^0.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react-swc": "^3.8.0",

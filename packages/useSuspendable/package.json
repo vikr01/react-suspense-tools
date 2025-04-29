@@ -1,6 +1,6 @@
 {
   "name": "use-suspendable",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "build/useSuspendable.js",
   "exports": {
     ".": "./build/useSuspendable.js",
@@ -20,7 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "react-use-stable": "^0.2.1",
-    "use-suspense-ref": "^0.0.0"
+    "use-suspense-ref": "^0.1.0"
   },
   "peerDependencies": {
     "react": "^19.0.0"
