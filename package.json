@@ -15,7 +15,7 @@
     "lint": "npm run lint-specific .",
     "lint-fix": "eslint . --fix",
     "lint-specific": "eslint",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "start": "npm run dev --workspace=react-suspense-examples-vite",
     "test": "TS_NODE_PROJECT=tsconfig.source.json jest",
     "typecheck": "tsc -p tsconfig.source.json",
@@ -59,5 +59,6 @@
     "tsup": "^8.4.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.30.1"
-  }
+  },
+  "keywords": ["react", "typescript", "suspense", "hook"]
 }

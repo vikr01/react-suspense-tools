@@ -50,7 +50,7 @@ function MyComponent({param}) {
 ### New version w/ `use` (`"react": ">=19.0.0"`):
 ```jsx
 import {use} from 'react';
-import useSuspendable from 'use-suspendable';
+import useSuspendable from 'react-use-suspendable';
 
 function MyComponent({param, ...passThroughProps}) {
     const [promise] = useSuspendable(
@@ -82,13 +82,13 @@ function MyComponentContainer(props) {
 You can use `use-suspendable/map-promise` or `use-suspendable/wrap-promise` or another promise synchronizer such as [p-state](https://github.com/sindresorhus/p-state).
 
 ```jsx
-import useSuspendable from 'use-suspendable';
+import useSuspendable from 'react-use-suspendable';
 import wrapPromise, {
   getValue,
   getReason,
   isDone,
   isRejected,
-} from "use-suspendable/wrap-promise";
+} from 'react-use-suspendable/wrap-promise';
 
 function MyComponent({param, ...passThroughProps}) {
     const [promise] = useSuspendable(
