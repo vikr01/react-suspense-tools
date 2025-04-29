@@ -1,6 +1,6 @@
 {
   "name": "use-suspense-ref",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "build/useSuspenseRef.js",
   "types": "build/useSuspenseRef.d.ts",
   "author": {
@@ -13,9 +13,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "react-fiber-identifiers": "^0.1.0",
     "react-use": "^17.6.0",
-    "react-fiber-identifiers": "^0.0.0",
-    "use-structural-id": "^0.0.0"
+    "use-structural-id": "^0.1.0"
   },
   "peerDependencies": {
     "react": "^19.0.0"
