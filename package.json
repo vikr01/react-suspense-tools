@@ -11,7 +11,7 @@
     "url": "http://github.com/vikr01/"
   },
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint-specific .",
     "lint-fix": "eslint . --fix",
     "lint-specific": "eslint",
