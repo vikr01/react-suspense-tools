@@ -30,7 +30,7 @@ const config: Config.InitialOptions = {
     "nanoid/non-secure": require.resolve("mock-nanoid/non-secure"),
     // due to __DEV_STRUCTURAL_ID_DEBUG__ being compiled out, but needed in testing
     "react-fiber-identifiers/get-unique-identifier": require.resolve(
-      "./packages/react-fiber-identifiers/src/getUniqueIdentifier.ts",
+      "../react-fiber-identifiers/src/getUniqueIdentifier.ts",
     ),
   },
 };

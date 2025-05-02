@@ -5,11 +5,11 @@
   "extends": "@tsconfig/recommended",
 
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "Preserve",
-    "moduleResolution": "Bundler",
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "moduleSuffixes": [".ts", ".tsx", ""],
-    "lib": ["ES2020"],
+    "lib": ["ESNext"],
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
