@@ -12,6 +12,7 @@
   },
   "scripts": {
     "build": "npm run build --workspaces --if-present",
+    "clean": "rimraf --glob \"packages/*/build\" \"**/*.tsbuildinfo\"",
     "lint": "npm run lint-specific .",
     "lint-fix": "eslint . --fix",
     "lint-specific": "eslint",
@@ -59,6 +60,7 @@
     "prettier": "^3.5.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "rimraf": "^6.0.1",
     "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "tsup": "^8.4.0",
@@ -68,5 +70,10 @@
   "engines": {
     "node": ">=20"
   },
-  "keywords": ["react", "typescript", "suspense", "hook"]
+  "keywords": [
+    "react",
+    "typescript",
+    "suspense",
+    "hook"
+  ]
 }
