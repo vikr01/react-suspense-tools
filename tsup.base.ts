@@ -11,7 +11,7 @@ export const tsupBaseConfig: Options = {
   outDir: 'build',
   format: ['esm', 'cjs'],
   target: 'es2020',
-  sourcemap: true,
+  sourcemap: false,
   define: {
     'process.env.NODE_ENV': JSON.stringify('production'),
     '__DEV_STRUCTURAL_ID_DEBUG__': JSON.stringify(false),
