@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build-example": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "test"
   },

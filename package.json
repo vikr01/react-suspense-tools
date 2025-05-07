@@ -11,14 +11,18 @@
     "url": "http://github.com/vikr01/"
   },
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "clean": "rimraf --glob \"packages/*/build\" \"**/*.tsbuildinfo\"",
+    "build": "turbo run build",
+    "clean": "rimraf --glob \"packages/*/build\" \"**/*.tsbuildinfo\" \"**/.turbo\"",
     "lint": "npm run lint-specific .",
     "lint-fix": "eslint . --fix",
     "lint-specific": "eslint",
+    "postinstall": "npm run build",
     "prepublishOnly": "npm run build",
+    "prestart": "npm run build",
     "start": "npm run dev --workspace=react-suspense-examples-vite",
+    "pretest": "npm run build",
     "test": "TS_NODE_PROJECT=tsconfig.source.json jest",
+    "pretypecheck": "npm run build",
     "typecheck": "tsc -p tsconfig.source.json",
     "script": "npm-run"
   },
@@ -64,9 +68,11 @@
     "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "tsup": "^8.4.0",
+    "turbo": "^2.5.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.30.1"
   },
+  "packageManager": "npm@10.9.2",
   "engines": {
     "node": ">=20"
   },
