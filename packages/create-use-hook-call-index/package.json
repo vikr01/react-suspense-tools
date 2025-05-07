@@ -3,6 +3,11 @@
   "version": "0.2.0",
   "main": "build/createUseHookCallIndex.js",
   "types": "build/createUseHookCallIndex.d.ts",
+  "author": {
+    "name": "Vik R",
+    "email": "vik120@icloud.com",
+    "url": "http://github.com/vikr01/"
+  },
   "scripts": {
     "build": "tsup",
     "test": "jest"
@@ -10,10 +15,14 @@
   "peerDependencies": {
     "react": "^19.0.0"
   },
-  "author": {
-    "name": "Vik R",
-    "email": "vik120@icloud.com",
-    "url": "http://github.com/vikr01/"
+  "homepage": "https://github.com/vikr01/react-suspense-tools/tree/HEAD/packages/create-use-hook-call-index",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vikr01/react-suspense-tools.git",
+    "directory": "packages/create-use-hook-call-index"
+  },
+  "bugs": {
+    "url": "https://github.com/vikr01/react-suspense-tools/issues"
   },
   "dependencies": {
     "its-fine": "^2.0.0"

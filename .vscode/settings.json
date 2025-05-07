@@ -1,21 +1,23 @@
 {
-    // Disable flowtype, this is a typescript project
-    "flow.enabled": false,
-    "eslint.enable": true,
+	// Disable flowtype, this is a typescript project
+	"flow.enabled": false,
+	"eslint.enable": true,
 
-    // Enable typescript for the project
-    "typescript.suggest.enabled": true,
-    "typescript.format.enable": true,
-    "typescript.validate.enable": true,
+	// Enable typescript for the project
+	"typescript.suggest.enabled": true,
+	"typescript.format.enable": true,
+	"typescript.validate.enable": true,
 
-    "javascript.suggestionActions.enabled": false,
+	"javascript.suggestionActions.enabled": false,
 
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "always",
-        "source.fixAll.ts": "always",
-    },
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "always",
+		"source.fixAll.ts": "always",
+	},
 
-    "files.associations": {
-        ".browserslistrc": "ini"
-    }
+	"files.associations": {
+		".browserslistrc": "ini"
+	},
+
+	"editor.tabSize": 2,
 }

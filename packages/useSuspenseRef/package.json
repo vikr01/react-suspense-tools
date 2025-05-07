@@ -12,6 +12,15 @@
     "build": "tsup",
     "test": "jest"
   },
+  "homepage": "https://github.com/vikr01/react-suspense-tools/tree/HEAD/packages/useSuspenseRef",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vikr01/react-suspense-tools.git",
+    "directory": "packages/useSuspenseRef"
+  },
+  "bugs": {
+    "url": "https://github.com/vikr01/react-suspense-tools/issues"
+  },
   "dependencies": {
     "react-fiber-identifiers": "^0.2.0",
     "react-use": "^17.6.0",
