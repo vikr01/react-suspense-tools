@@ -1,7 +1,6 @@
 {
-    "recommendations": [
-    ],
-    "unwantedRecommendations": [
-        "flowtype.flow-for-vscode"
-    ],
+  "recommendations": [],
+  "unwantedRecommendations": [
+    "flowtype.flow-for-vscode",
+  ],
 }

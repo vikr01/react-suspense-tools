@@ -17,6 +17,15 @@
     "build": "tsup",
     "test": "jest"
   },
+  "homepage": "https://github.com/vikr01/react-suspense-tools/tree/HEAD/packages/useSuspendable",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vikr01/react-suspense-tools.git",
+    "directory": "packages/useSuspendable"
+  },
+  "bugs": {
+    "url": "https://github.com/vikr01/react-suspense-tools/issues"
+  },
   "dependencies": {
     "react-use-stable": "^0.2.1",
     "use-suspense-ref": "^0.2.0"

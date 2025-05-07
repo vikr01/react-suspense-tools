@@ -2,11 +2,26 @@
   "name": "react-suspense-examples-vite",
   "version": "0.2.0",
   "private": true,
+
+  "author": {
+    "name": "Vik R",
+    "email": "vik120@icloud.com",
+    "url": "http://github.com/vikr01/"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "test"
+  },
+  "homepage": "https://github.com/vikr01/react-suspense-tools/tree/HEAD/packages/react-suspense-examples-vite",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vikr01/react-suspense-tools.git",
+    "directory": "packages/react-suspense-examples-vite"
+  },
+  "bugs": {
+    "url": "https://github.com/vikr01/react-suspense-tools/issues"
   },
   "dependencies": {
     "its-fine": "^2.0.0",
