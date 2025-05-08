@@ -20,4 +20,6 @@
 	},
 
 	"editor.tabSize": 2,
+
+	"turbo.useLocalTurbo": true,
 }

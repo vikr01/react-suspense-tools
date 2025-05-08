@@ -1,5 +1,8 @@
 {
-  "recommendations": [],
+  "recommendations": [
+    "vercel.turbo-vsc",
+    "dbaeumer.vscode-eslint",
+  ],
   "unwantedRecommendations": [
     "flowtype.flow-for-vscode",
   ],
