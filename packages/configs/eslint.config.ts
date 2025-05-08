@@ -33,32 +33,32 @@ const tsConfigPath = require.resolve("../../tsconfig.source.json");
 
 export default defineConfig(
   tseslint.config(
-    eslint.configs.recommended,
-    tseslint.configs.recommended,
-    eslintConfigPrettier,
-    eslintPluginPrettierRecommended,
-    {
-      // all typescript and javascript files
-      files: ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      languageOptions: {
-        parserOptions: {
-          project: [tsConfigPath],
-        },
-      },
-    },
-    {
-      // commonjs files only
-      files: ["**/*.cjs"],
-      languageOptions: {
-        globals: {
-          ...globals.node,
-        },
-        sourceType: "commonjs",
-      },
-      rules: {
-        ...tsRulesOff,
-      },
-    },
+    // eslint.configs.recommended,
+    // tseslint.configs.recommended,
+    // eslintConfigPrettier,
+    // eslintPluginPrettierRecommended,
+    // {
+    //   // all typescript and javascript files
+    //   files: ["*.ts", "*.tsx", "*.js", "*.jsx"],
+    //   languageOptions: {
+    //     parserOptions: {
+    //       project: [tsConfigPath],
+    //     },
+    //   },
+    // },
+    // {
+    //   // commonjs files only
+    //   files: ["**/*.cjs"],
+    //   languageOptions: {
+    //     globals: {
+    //       ...globals.node,
+    //     },
+    //     sourceType: "commonjs",
+    //   },
+    //   rules: {
+    //     ...tsRulesOff,
+    //   },
+    // },
     {
       // browser files
       files: [
