@@ -9,6 +9,5 @@ register({
   project: tsConfig,
   compilerOptions: {
     module: "CommonJS",
-    moduleResolution: "Node",
   },
 });
