@@ -94,12 +94,6 @@ export default defineConfig(
         },
       },
     },
-    globalIgnores([
-      "**/node_modules/",
-      "**/build/",
-      "**/tsup.*.ts",
-      "./packages/react-suspense-examples/config/",
-      "./packages/react-suspense-examples/scripts/",
-    ]),
+    globalIgnores(["**/node_modules/", "**/build/"]),
   ) as ConfigWithExtendsArray,
 );
