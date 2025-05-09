@@ -80,9 +80,8 @@ describe("useSuspendable", () => {
 
   it("does work with old throwing style too", async () => {
     const expectedResult1: unique symbol = Symbol("first result");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const expectedResult2: unique symbol = Symbol("result 2");
-    type ResultTypes = typeof expectedResult1 | typeof expectedResult2;
+    const _expectedResult2: unique symbol = Symbol("result 2");
+    type ResultTypes = typeof expectedResult1 | typeof _expectedResult2;
 
     const [promise, unsuspend] = createSuspender<ResultTypes>();
 

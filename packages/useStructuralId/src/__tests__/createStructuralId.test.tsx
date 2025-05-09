@@ -38,7 +38,6 @@ describe("createStructuralId", () => {
   const Component3 = React.forwardRef(function Component3(
     { children }: ChildrenOnlyProps,
     // silence react complaining there was no second parameter
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _ref,
   ) {
     fiber3 =
