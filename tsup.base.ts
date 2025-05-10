@@ -31,7 +31,7 @@ export const tsupBaseConfig: Options = {
 
   // ✅ Tell tsup to use the shared source config
   esbuildOptions(options) {
-    options.tsconfig = require.resolve("./tsconfig.source.json");
+    options.tsconfig = require.resolve("./tsconfig.json");
   },
 
   // Copy non-code assets from src → build

@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [
-    "./tsconfig.source.json",
+    "./tsconfig.json",
     "./tsup.base.ts"
   ],
   "cacheDir": ".turbo/cache",

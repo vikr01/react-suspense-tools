@@ -21,9 +21,9 @@
     "prestart": "npm run build",
     "start": "npm run dev --workspace=react-suspense-examples-vite",
     "pretest": "npm run build",
-    "test": "TS_NODE_PROJECT=tsconfig.source.json jest",
+    "test": "TS_NODE_PROJECT=tsconfig.json jest",
     "pretypecheck": "npm run build",
-    "typecheck": "tsc -p tsconfig.source.json",
+    "typecheck": "tsc -p tsconfig.json",
     "script": "npm-run"
   },
   "homepage": "https://github.com/vikr01/react-suspense-tools",
