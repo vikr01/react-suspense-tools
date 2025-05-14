@@ -1,6 +1,6 @@
 {
   "name": "use-suspense-ref",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "build/useSuspenseRef.js",
   "types": "build/useSuspenseRef.d.ts",
   "author": {
@@ -22,9 +22,9 @@
     "url": "https://github.com/vikr01/react-suspense-tools/issues"
   },
   "dependencies": {
-    "react-fiber-identifiers": "^0.2.1",
+    "react-fiber-identifiers": "^0.2.2",
     "react-use": "^17.6.0",
-    "use-structural-id": "^0.2.1"
+    "use-structural-id": "^0.2.2"
   },
   "peerDependencies": {
     "react": "^19.0.0"
