@@ -2,7 +2,7 @@
   // This config is ONLY for type-checking actual source code in packages
   // It is NOT used for any typescript files not in src/
 
-  "extends": ["@tsconfig/recommended"],
+  "extends": ["@tsconfig/recommended/tsconfig.json"],
 
   "compilerOptions": {
     "target": "ES2020",
