@@ -1,4 +1,5 @@
 {
   "name": "react-suspense-tools-configs",
-  "private": true
+  "private": true,
+  "license": "MIT"
 }
