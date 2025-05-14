@@ -1,6 +1,6 @@
 {
   "name": "create-use-hook-call-index",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "build/createUseHookCallIndex.js",
   "types": "build/createUseHookCallIndex.d.ts",
   "author": {
@@ -28,7 +28,7 @@
     "its-fine": "^2.0.0"
   },
   "license": "MIT",
-  "gitHead": "058a8f4b2321bd99b12491ae6c80bdeedeb20aae",
+  "gitHead": "a46bf01ec6ed4468a9c16483051dadf362dbae44",
   "keywords": [
     "react",
     "typescript",

@@ -1,6 +1,6 @@
 {
   "name": "use-structural-id",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "build/useStructuralId.js",
   "types": "build/useStructuralId.d.ts",
   "author": {
@@ -29,7 +29,7 @@
     "react": "^19.0.0"
   },
   "license": "MIT",
-  "gitHead": "058a8f4b2321bd99b12491ae6c80bdeedeb20aae",
+  "gitHead": "a46bf01ec6ed4468a9c16483051dadf362dbae44",
   "keywords": [
     "react",
     "typescript",
