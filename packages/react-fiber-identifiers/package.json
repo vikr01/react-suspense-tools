@@ -1,6 +1,6 @@
 {
   "name": "react-fiber-identifiers",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "exports": {
     "./get-unique-identifier": "./build/getUniqueIdentifier.js",
     "./is-error-boundary": "./build/isErrorBoundary.js",

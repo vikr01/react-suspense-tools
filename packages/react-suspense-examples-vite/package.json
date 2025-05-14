@@ -1,6 +1,6 @@
 {
   "name": "react-suspense-examples-vite",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "author": {
     "name": "Vik R",
@@ -28,9 +28,9 @@
     "react-dom": "19.0.0",
     "react-json-view-lite": "^2.4.1",
     "react-use": "^17.6.0",
-    "react-use-suspendable": "^0.2.0",
+    "react-use-suspendable": "^0.2.1",
     "seedrandom": "^3.0.5",
-    "use-suspense-ref": "^0.2.0"
+    "use-suspense-ref": "^0.2.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react-swc": "^3.8.0",
